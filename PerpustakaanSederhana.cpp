@@ -74,3 +74,5 @@ int main(){
     TambahAnggota();
 }
 
+// Catatan 4 November 2025  : walaupu memasukkan "01" dalam input bulan, sistem masih akan menampilkan kode output 2025"1"16001, bukan 2025"01"16001.
+
