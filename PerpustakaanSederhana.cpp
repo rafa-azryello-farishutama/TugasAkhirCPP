@@ -4,7 +4,7 @@
 using namespace std;
 
 struct anggota{
-    int idanggota;
+    string idanggota;
     string nama;
     string alamat;
     int tanggal;
@@ -14,14 +14,24 @@ struct anggota{
     int status;
 };
 
+struct buku{
+    string idbuku;
+    string isbn;
+    string judul;
+    string pengarang;
+    string penerbit;
+    int tahunTerbit;
+    int stok;
+};
+
 int HitungUrutan(string Tahun,string Bulan,string Tanggal){
     ifstream file("anggota.txt"); 
     string line;
     int count = 0;
-    string prefix = Tahun + Bulan + Tanggal;
+    string pencarian = Tahun + Bulan + Tanggal;
 
     while (getline(file, line)) { 
-        if (line.find(prefix) != string::npos) { 
+        if (line.find(pencarian) != string::npos) { 
             count++; 
         }
     }
@@ -32,11 +42,23 @@ int HitungUrutan(string Tahun,string Bulan,string Tanggal){
 
 
 void TambahAnggota(){
-    anggota x;
+
+anggota x;
+while(true){
     cout << "Masukkan ID Anggota : ";
-    cin>>x.idanggota;
+    getline(cin,x.idanggota);
+
+    if(x.idanggota.length() > 6){
+        cout << "ID Anggota hanya bisa berjumlah 6 Digit!" << endl;
+    }
+    else if(x.idanggota.length() == 0){
+        cout << "ID Anggota tidak kosong!" << endl;
+    }
+    else{
+        break;
+    }
+}
     cout << "Masukkan Nama : ";
-    cin.ignore();
     getline(cin,x.nama);
     cout << "Masukkan Alamat : ";
     getline(cin,x.alamat);
@@ -51,28 +73,113 @@ void TambahAnggota(){
     getline(cin,x.email);
     cout << "Apakah Siswa masih aktif (1=aktif, 0=tidak aktif) : ";
     cin >> x.status;
+
     string strTahun = to_string(x.tahun);
-    string strBulan = to_string(x.bulan);
-    string strTanggal = to_string(x.tanggal);
+
+    string strBulan, strTanggal;
+    if (x.bulan < 10) {
+        strBulan = "0" + to_string(x.bulan);
+    }
+    else {
+        strBulan=to_string(x.bulan);
+    }
+
+    if(x.tanggal < 10) {
+        strTanggal = "0" + to_string(x.tanggal);
+    }
+    else{
+        strTanggal = to_string(x.tanggal);
+    }
+
     int urutan= HitungUrutan(strTahun,strBulan,strTanggal);
 
-    string urutanString = to_string(urutan); //perubahan st
+    string urutanString = to_string(urutan); 
     while (urutanString.length() < 3) {
     urutanString = "0" + urutanString;
 }
 string kodeanggota = strTahun + strBulan + strTanggal + urutanString;
 
 ofstream fileOutput("anggota.txt",ios::app);
-fileOutput << x.idanggota << ";" << kodeanggota << ";" << x.nama << ";" << x.tanggal << "-" << x.bulan << 
+fileOutput << x.idanggota << ";"<< kodeanggota << ";" << x.nama << ";" << x.tanggal << "-" << x.bulan << 
              "-" << x.tahun << ";" << x.alamat << ";" << x.email << ";" << x.status<<endl;
 fileOutput.close();
 cout << "Data Siswa berhasil ditambahkan!";
 
 }
 
-int main(){
-    TambahAnggota();
+void TambahBuku(){
+    buku a;
+    cout << "Judul Buku : ";
+    getline(cin,a.judul);
+    
+    while(true) {
+    cout << "ID Buku : ";
+    getline(cin,a.idbuku);
+
+    if(a.idbuku.length() > 6){
+        cout << "ID Buku harus berjumlah 6 Digit" << endl;
+    }
+    else if(a.idbuku.length() == 0){
+        cout << "ID Buku tidak boleh kosong!" << endl;
+    }
+    else{
+        break;
+    }
 }
 
-// Catatan 4 November 2025  : walaupu memasukkan "01" dalam input bulan, sistem masih akan menampilkan kode output 2025"1"16001, bukan 2025"01"16001.
+while(true) {
+    cout << "ISBN : ";
+    getline(cin,a.isbn);
+
+    if(a.isbn.length() > 13){
+        cout << "ISBN harus berjumlah 13 Digit!" << endl;
+    }
+    else if(a.isbn.length() == 0){
+        cout << "ISBN tidak boleh kosong!" << endl;
+    }
+    else{
+        break;
+    }
+}
+    cout << "Pengarang : ";
+    getline(cin,a.pengarang);
+    cout << "Penerbit : ";
+    getline(cin,a.penerbit);
+    cout << "Tahun Terbit : ";
+    cin.ignore();
+    cin >> a.tahunTerbit;
+    cout << "Stok Awal : ";
+    cin >> a.stok;
+
+    ofstream fileOutput("buku.txt",ios::app);
+    fileOutput << a.idbuku << ";" << a.isbn << ";" << a.judul << ";" << a.pengarang 
+               << ";" << a.penerbit << ";" << a.tahunTerbit << ";" << a.stok << endl;
+    fileOutput.close();
+    cout << "Data Buku berhasil ditambahkan!";
+
+}
+
+void CariAnggota() {
+    string katakunci;
+    cout << "Masukkan Anggota Kode : ";
+    getline(cin,katakunci);
+
+    ifstream fileOutput("anggota.txt");
+    string line;
+    while(getline(fileOutput,line)){
+        if(line.find(katakunci)!= string::npos){
+            cout << "Data Ditemukan : " << line;
+
+            fileOutput.close();
+            return;
+        }
+    }
+    cout << "Data tidak ditemukan!";
+    fileOutput.close();
+}
+
+int main(){
+    TambahBuku();
+}
+
 
