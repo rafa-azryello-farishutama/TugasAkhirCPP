@@ -1,0 +1,22 @@
+
+*.exe
+*.out
+*.obj
+*.o
+
+*.dll
+*.lib
+*.pdb
+
+# Ignore folder build
+/build/
+bin/
+debug/
+release/
+
+.vscode/
+*.code-workspace
+
+
+Thumbs.db
+.DS_Store
