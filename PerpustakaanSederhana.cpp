@@ -24,6 +24,10 @@ struct buku{
     int stok;
 };
 
+struct petugas{
+
+};
+
 int HitungUrutan(string Tahun,string Bulan,string Tanggal){
     ifstream file("anggota.txt"); 
     string line;
