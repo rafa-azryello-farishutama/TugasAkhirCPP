@@ -44,39 +44,128 @@ int HitungUrutan(string Tahun,string Bulan,string Tanggal){
     return count + 1; 
 }
 
+int MenghasilkanID(){
+    ifstream file("anggota.txt");
+    string line;
+    int count = 0;
 
-void TambahAnggota(){
-
-anggota x;
-while(true){
-    cout << "Masukkan ID Anggota : ";
-    getline(cin,x.idanggota);
-
-    if(x.idanggota.length() > 6){
-        cout << "ID Anggota hanya bisa berjumlah 6 Digit!" << endl;
+    while(getline(file,line)){
+        count++;
     }
-    else if(x.idanggota.length() == 0){
-        cout << "ID Anggota tidak kosong!" << endl;
+    file.close();
+    return count+1;
+}
+
+void TambahAnggota(){    
+anggota x;
+cout << "Masukkan Nama : ";
+getline(cin,x.nama);
+cout << "Masukkan Alamat : ";
+getline(cin,x.alamat);
+
+while(true){
+    cout << "Masukkan Tahun : ";
+    cin >> x.tahun;
+    if(x.tahun>2025){
+        cout << "Tolong memilih Tahun yang benar"<<endl;
+        }
+    else{
+        break;
+    }
+}
+
+while(true){
+    cout << "Masukkan Bulan : ";
+    cin >> x.bulan;
+    if(x.bulan>12){
+        cout << "Tolong memilih bulan yang benar"<<endl;
+    }
+    else if(x.bulan == 0){
+        cout << "Bulan tidak boleh kosong" << endl;
     }
     else{
         break;
     }
 }
-    cout << "Masukkan Nama : ";
-    getline(cin,x.nama);
-    cout << "Masukkan Alamat : ";
-    getline(cin,x.alamat);
-    cout << "Masukkan Tanggal Lahir : ";
-    cin >> x.tanggal;
-    cout << "Masukkan Bulan Lahir : ";
-    cin >> x.bulan;
-    cout << "Masukkan Tahun Lahir : ";
-    cin >> x.tahun;
-    cout << "Masukkan Email : ";
-    cin.ignore();
-    getline(cin,x.email);
-    cout << "Apakah Siswa masih aktif (1=aktif, 0=tidak aktif) : ";
-    cin >> x.status;
+
+if(x.bulan == 1 || x.bulan == 3 || x.bulan == 5 || x.bulan == 7 ||
+   x.bulan == 8 || x.bulan == 10 || x.bulan == 12 ){
+    while(true){
+        cout << "Masukkan Tanggal : ";
+        cin >> x.tanggal;
+
+        if(x.tanggal > 31){
+            cout << "Tanggal Tidak boleh melebihi batas bulan" << endl;
+        }
+        else if(x.tanggal == 0){
+            cout << "Tanggal Tidak boleh kosong" << endl;
+        }
+        else{
+            break;
+        }
+    }
+}
+
+if(x.bulan == 4 || x.bulan == 6 || x.bulan == 9 || x.bulan == 11){
+    while(true){
+        cout << "Masukkan Tanggal : ";
+        cin >> x.tanggal;
+
+        if(x.tanggal > 30){
+            cout << "Tanggal tidak boleh melebihi batas bulan" << endl;
+        }
+        else if(x.tanggal == 0){
+            cout << "Tanggal tidak boleh kosong" << endl;
+        }
+        else{
+            break;
+        }
+
+
+    }
+}
+
+if(x.bulan == 2){
+    if((x.tahun%400 == 0) || (x.tahun%4==0 && x.tahun%100!=0)){
+        while(true){
+            cout << "Masukkan Tanggal : ";
+            cin >> x.tanggal;
+
+            if(x.tanggal > 29){
+                cout << "Tanggal tidak boleh melebihi batas bulan" << endl;
+            }
+            else if(x.tanggal == 0){
+                cout << "Tanggal tidak boleh kosong";
+            }
+            else{
+                break;
+            }
+        }
+
+            
+    }
+    else{
+        while(true){
+        cout << "Masukkan Tanggal : ";
+        cin >> x.tanggal;
+
+        if(x.tanggal > 28){
+            cout << "Tanggal tidak boleh melebihi batas" << endl;
+            }
+        else if(x.tanggal == 0){
+            cout << "Tanggal tidak boleh kosong";
+            }
+        else{
+            break;
+            }
+        }
+    }
+}
+    
+cout << "Masukkan Email : ";
+cin.ignore();
+getline(cin,x.email);
+x.status = 1;
 
     string strTahun = to_string(x.tahun);
 
@@ -103,6 +192,15 @@ while(true){
 }
 string kodeanggota = strTahun + strBulan + strTanggal + urutanString;
 
+int nomorID=MenghasilkanID();
+
+string id=to_string(nomorID);
+while(id.length() < 6){
+    id = "0" + id; 
+}
+
+x.idanggota = id;
+
 ofstream fileOutput("anggota.txt",ios::app);
 fileOutput << x.idanggota << ";"<< kodeanggota << ";" << x.nama << ";" << x.tanggal << "-" << x.bulan << 
              "-" << x.tahun << ";" << x.alamat << ";" << x.email << ";" << x.status<<endl;
@@ -123,6 +221,9 @@ void TambahBuku(){
     if(a.idbuku.length() > 6){
         cout << "ID Buku harus berjumlah 6 Digit" << endl;
     }
+    else if(a.idbuku.length() < 6){
+        cout << "ID Buku harus berjumlah 6 Digit" << endl;
+    }
     else if(a.idbuku.length() == 0){
         cout << "ID Buku tidak boleh kosong!" << endl;
     }
@@ -136,6 +237,9 @@ while(true) {
     getline(cin,a.isbn);
 
     if(a.isbn.length() > 13){
+        cout << "ISBN harus berjumlah 13 Digit!" << endl;
+    }
+    else if(a.isbn.length() < 13){
         cout << "ISBN harus berjumlah 13 Digit!" << endl;
     }
     else if(a.isbn.length() == 0){
@@ -183,7 +287,7 @@ void CariAnggota() {
 }
 
 int main(){
-    TambahBuku();
+    TambahAnggota();
 }
 
 

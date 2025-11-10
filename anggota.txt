@@ -1,1 +1,2 @@
-123456;2010116001;Muhammad Rafa Azryello Farishutama;16-1-2010;Ds. Jabon, Kec. Kalidawir, Kab. Tulungagung;farisss@gmail.com;1
+000001;20090328001;Maulana Syahreza;28-3-2009;Desa Domasan;MAULANA@GMAIL.COM;1
+000002;20040229001;Maulana Qubro;29-2-2004;Desa Bandung;maulana@gmail.com;1
