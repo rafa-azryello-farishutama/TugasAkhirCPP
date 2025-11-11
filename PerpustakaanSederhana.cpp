@@ -25,7 +25,10 @@ struct buku{
 };
 
 struct petugas{
-
+    string idpetugas;
+    string username;
+    string password;
+    string nama;
 };
 
 int HitungUrutan(string Tahun,string Bulan,string Tanggal){
@@ -56,6 +59,18 @@ int MenghasilkanID(){
     return count+1;
 }
 
+int MenghasilkanIDbuku(){
+    ifstream file("buku.txt");
+    string line;
+    int count = 0;
+
+    while(getline(file,line)){
+        count++;
+    }
+    file.close();
+    return count+1;
+}
+
 void TambahAnggota(){    
 anggota x;
 cout << "Masukkan Nama : ";
@@ -66,7 +81,7 @@ getline(cin,x.alamat);
 while(true){
     cout << "Masukkan Tahun : ";
     cin >> x.tahun;
-    if(x.tahun>2025){
+    if(x.tahun>2025) {
         cout << "Tolong memilih Tahun yang benar"<<endl;
         }
     else{
@@ -213,49 +228,50 @@ void TambahBuku(){
     buku a;
     cout << "Judul Buku : ";
     getline(cin,a.judul);
-    
-    while(true) {
-    cout << "ID Buku : ";
-    getline(cin,a.idbuku);
+    while(true){
+        cout << "Masukkan ISBN : ";
+        getline(cin,a.isbn);
 
-    if(a.idbuku.length() > 6){
-        cout << "ID Buku harus berjumlah 6 Digit" << endl;
+        if(a.isbn.length() > 13){
+            cout << "Digit harus berjumlah 13" << endl;
+        }
+        else if(a.isbn.length() < 13){
+            cout << "Digit harus berjumlah 13" << endl;
+        }
+        else if(a.isbn.length() == 0){
+            cout << "ISBN tidak boleh kosong" << endl;
+        }
+        else{
+            break;
+        }
     }
-    else if(a.idbuku.length() < 6){
-        cout << "ID Buku harus berjumlah 6 Digit" << endl;
-    }
-    else if(a.idbuku.length() == 0){
-        cout << "ID Buku tidak boleh kosong!" << endl;
-    }
-    else{
-        break;
-    }
-}
 
-while(true) {
-    cout << "ISBN : ";
-    getline(cin,a.isbn);
-
-    if(a.isbn.length() > 13){
-        cout << "ISBN harus berjumlah 13 Digit!" << endl;
-    }
-    else if(a.isbn.length() < 13){
-        cout << "ISBN harus berjumlah 13 Digit!" << endl;
-    }
-    else if(a.isbn.length() == 0){
-        cout << "ISBN tidak boleh kosong!" << endl;
-    }
-    else{
-        break;
-    }
-}
     cout << "Pengarang : ";
     getline(cin,a.pengarang);
     cout << "Penerbit : ";
     getline(cin,a.penerbit);
-    cout << "Tahun Terbit : ";
     cin.ignore();
+while(true){
+    cout << "Tahun Terbit : ";
     cin >> a.tahunTerbit;
+
+    if(a.tahunTerbit > 2025){
+        cout << "Tahun tidak boleh melebihi 2025!" << endl;
+    }
+    else{
+        break;
+    }
+}
+
+int nomorIDbuku=MenghasilkanIDbuku();
+
+string idBuku=to_string(nomorIDbuku);
+while(idBuku.length() < 4){
+    idBuku = "0" + idBuku; 
+}
+
+a.idbuku = "BK" + idBuku;
+
     cout << "Stok Awal : ";
     cin >> a.stok;
 
@@ -264,6 +280,18 @@ while(true) {
                << ";" << a.penerbit << ";" << a.tahunTerbit << ";" << a.stok << endl;
     fileOutput.close();
     cout << "Data Buku berhasil ditambahkan!";
+
+}
+
+void TambahAdmin(){
+    petugas b;
+    cout << "Masukkan Username : ";
+    getline(cin,b.idpetugas);
+    cout << "Masukkan Nama Lengkap Petugas : ";
+    getline(cin,b.nama);
+
+    cout << "Buat Password : ";
+    getline(cin,b.password);
 
 }
 
@@ -276,8 +304,29 @@ void CariAnggota() {
     string line;
     while(getline(fileOutput,line)){
         if(line.find(katakunci)!= string::npos){
-            cout << "Data Ditemukan : " << line;
+            int posisi1 = line.find(';');
+            int posisi2 = line.find(';',posisi1 + 1);
+            int posisi3 = line.find(';',posisi2 + 1);
+            int posisi4 = line.find(';',posisi3 + 1);
+            int posisi5 = line.find(';',posisi4 + 1);
+            int posisi6 = line.find(';',posisi5 + 1);
 
+            string id = line.substr(0,posisi1);
+            string kode = line.substr(posisi1 + 1, posisi2-posisi1-1);
+            string nama = line.substr(posisi2 + 1, posisi3-posisi2-1);
+            string tanggal = line.substr(posisi3 + 1, posisi4-posisi3-1);
+            string alamat = line.substr(posisi4 + 1, posisi5-posisi4-1);
+            string email = line.substr(posisi5 + 1, posisi6-posisi5-1);
+            string status = line.substr(posisi6 + 1);
+
+            cout << "Data dari siswa yang dicari" << endl;
+            cout << "Nama : " << nama << endl;
+            cout << "ID Anggota : "<<id<<endl;
+            cout << "Kode Anggota : "<<kode<<endl;
+            cout << "Tanggal : "<<tanggal<<endl;
+            cout << "Alamat : "<<alamat<<endl;
+            cout << "Email : "<<email<<endl;
+            cout << "Status Siswa : "<<status;
             fileOutput.close();
             return;
         }
@@ -286,8 +335,91 @@ void CariAnggota() {
     fileOutput.close();
 }
 
+void CariBuku(){
+    string katakunci;
+    cout << "Masukkan Judul Buku : ";
+    getline(cin,katakunci);
+
+    ifstream file("buku.txt");
+    string line;
+    while(getline(file,line)){
+        if(line.find(katakunci)!=string::npos){
+            int posisi1 = line.find(';');
+            int posisi2 = line.find(';',posisi1 + 1);
+            int posisi3 = line.find(';',posisi2 + 1);
+            int posisi4 = line.find(';',posisi3 + 1);
+            int posisi5 = line.find(';',posisi4 + 1);
+            int posisi6 = line.find(';',posisi5 + 1);
+
+            string id = line.substr(0,posisi1);
+            string isbn = line.substr(posisi1+1, posisi2-posisi1-1);
+            string nama = line.substr(posisi2+1,posisi3-posisi2-1);
+            string pengarang = line.substr(posisi3+1,posisi4-posisi3-1);
+            string penerbit = line.substr(posisi4+1,posisi5-posisi4-1);
+            string tahunTerbit = line.substr(posisi5+1,posisi6-posisi5-1);
+            string stok = line.substr(posisi6+1);
+
+            cout << "Nama : " << nama << endl;
+            cout << "Pengarang : "<<pengarang << endl;
+            cout << "ID Buku : " << id << endl;
+            cout << "ISBN : "<<isbn<<endl;
+            cout << "Penerbit : "<<penerbit<<endl;
+            cout << "Tahun Terbit : "<<tahunTerbit<<endl;
+            cout << "Stok : "<<stok;
+            file.close();
+            return;
+        }
+    }
+    cout << "Data tidak ditemukan!";
+    file.close();
+}
+
+void nonaktifkanPengguna(){
+    
+}
+
+void login(){
+    int menu;
+    cout << "Menu Perpustakaan Sederhana"<<endl;
+    cout << "==========================="<<endl;
+    cout << "1. Login sebagai Petugas"<<endl;
+    cout << "2. Login sebagai Siswa"<<endl;
+    cout << "Pilihan Menu : ";
+    cin >> menu;
+    cin.ignore();
+
+    if(menu==1){
+        string username;
+        string password;
+        cout << "Masukkan Username : ";
+        getline(cin,username);
+        cout << "Masukkan Password : ";
+        getline(cin,password);
+
+        ifstream file("petugas.txt");
+        string line;
+        while(getline(file,line)){
+            int posisi1 = line.find(';');
+            int posisi2 = line.find(';',posisi1 + 1);
+            int posisi3 = line.find(';',posisi2 + 1);
+
+            string usernameAdmin = line.substr(0,posisi1);
+            string passwordAdmin = line.substr(posisi1 + 1, posisi2-posisi1-1);
+            string statusAdmin = line.substr(posisi2 + 1, posisi3-posisi2-1);
+
+            if(username == usernameAdmin && password == passwordAdmin && statusAdmin == "1"){
+                break;
+            }
+
+        }
+        file.close();
+
+        cout << "Welkam!";
+    }
+}
+
 int main(){
-    TambahAnggota();
+    CariBuku();
 }
 
 
