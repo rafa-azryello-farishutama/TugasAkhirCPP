@@ -29,6 +29,7 @@ struct petugas{
     string username;
     string password;
     string nama;
+    int noadmin;
 };
 
 int HitungUrutan(string Tahun,string Bulan,string Tanggal){
@@ -73,6 +74,7 @@ int MenghasilkanIDbuku(){
 
 void TambahAnggota(){    
 anggota x;
+cout << endl;
 cout << "Masukkan Nama : ";
 getline(cin,x.nama);
 cout << "Masukkan Alamat : ";
@@ -283,16 +285,40 @@ a.idbuku = "BK" + idBuku;
 
 }
 
+int MenghasilkanIDadmin(){
+    ifstream file("petugas.txt");
+    string line;
+    int count = 0;
+
+    while(getline(file,line)){
+        count++;
+    }
+    file.close();
+    return count+1;
+}
+
 void TambahAdmin(){
     petugas b;
     cout << "Masukkan Username : ";
-    getline(cin,b.idpetugas);
+    getline(cin,b.username);
     cout << "Masukkan Nama Lengkap Petugas : ";
     getline(cin,b.nama);
-
     cout << "Buat Password : ";
     getline(cin,b.password);
+    b.noadmin = 0;
+    int ID = MenghasilkanIDadmin();
+    string nomer = to_string(ID); 
+    while (nomer.length() < 4) {
+        nomer = "0" + nomer;
+    }
+    b.idpetugas = "AD" + nomer;
 
+
+    ofstream fileOutput("petugas.txt",ios::app);
+    fileOutput << b.idpetugas << ";" << b.username << ";" << b.noadmin << ";"
+               << b.password << ";" << b.nama << endl;
+    fileOutput.close();
+    cout << "Data Admin berhasil ditambahkan!";
 }
 
 void CariAnggota() {
@@ -374,8 +400,86 @@ void CariBuku(){
     file.close();
 }
 
-void nonaktifkanPengguna(){
+void InterfaceAdminUtama(){
+    string menu;
+    int pilih;
+    cout << "Menu Admin Utama" << endl;
+    cout << "1. Tambah Anggota" << endl;
+    cout << "2. Tambah Buku" << endl;
+    cout << "3. Cari Anggota" << endl;
+    cout << "4. Cari Buku" << endl;
+    cout << "5. Tambah Admin" << endl;
     
+    while(true){
+    cout << "Masukkan Pilihan : ";
+    getline(cin,menu);
+    pilih = stoi(menu);
+
+    if(pilih > 5){
+        cout << "Tolong Pilih sesuai angka!";
+    }
+    else if(pilih == 0){
+        cout << "Menu tidak boleh kosong!";
+    }
+    else{
+        break;
+    }
+    }
+
+    if(pilih==1){
+        TambahAnggota();
+    }
+    else if(pilih==2){
+        TambahBuku();
+    }
+    else if(pilih==3){
+        CariAnggota();
+    }
+    else if(pilih==4){
+        CariBuku();
+    }
+    else if(pilih==5){
+        TambahAdmin();
+    }
+}
+
+void InterfaceAdminBiasa(){
+    string menu;
+    int pilih;
+    cout << "Menu Admin Utama" << endl;
+    cout << "1. Tambah Anggota" << endl;
+    cout << "2. Tambah Buku" << endl;
+    cout << "3. Cari Anggota" << endl;
+    cout << "4. Cari Buku" << endl;
+    
+    while(true){
+    cout << "Masukkan Pilihan : ";
+    getline(cin,menu);
+    pilih = stoi(menu);
+
+    if(pilih > 5){
+        cout << "Tolong Pilih sesuai angka!";
+    }
+    else if(pilih == 0){
+        cout << "Menu tidak boleh kosong!";
+    }
+    else{
+        break;
+    }
+    }
+
+    if(pilih==1){
+        TambahAnggota();
+    }
+    else if(pilih==2){
+        TambahBuku();
+    }
+    else if(pilih==3){
+        CariAnggota();
+    }
+    else if(pilih==4){
+        CariBuku();
+    }
 }
 
 void login(){
@@ -402,24 +506,30 @@ void login(){
             int posisi1 = line.find(';');
             int posisi2 = line.find(';',posisi1 + 1);
             int posisi3 = line.find(';',posisi2 + 1);
+            int posisi4 = line.find(';',posisi3 + 1);
 
-            string usernameAdmin = line.substr(0,posisi1);
-            string passwordAdmin = line.substr(posisi1 + 1, posisi2-posisi1-1);
+            string idAdmin = line.substr(0,posisi1);
+            string usernameAdmin = line.substr(posisi1 + 1, posisi2-posisi1-1);
             string statusAdmin = line.substr(posisi2 + 1, posisi3-posisi2-1);
+            string passwordAdmin = line.substr(posisi3 + 1,posisi4-posisi3-1);
 
             if(username == usernameAdmin && password == passwordAdmin && statusAdmin == "1"){
-                break;
+                InterfaceAdminUtama();
+            }
+            else if(username == usernameAdmin && password == passwordAdmin && statusAdmin == "0"){
+                InterfaceAdminBiasa();
+            }
+            else{
+
             }
 
         }
         file.close();
-
-        cout << "Welkam!";
     }
 }
 
 int main(){
-    CariBuku();
+    login();
 }
 
 
