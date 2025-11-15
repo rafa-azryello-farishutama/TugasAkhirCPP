@@ -482,15 +482,55 @@ void InterfaceAdminBiasa(){
     }
 }
 
+void InterfaceAnggota(){
+    string menu;
+    int pilihan;
+    cout << endl << "Daftar Menu" << endl;
+    cout << "1. Cari Buku" << endl;
+    while(true){
+    cout << "Pilihan Menu : ";
+    getline(cin,menu);
+
+    pilihan = stoi(menu);
+    if(pilihan>1){
+        cout << "Tolong pilih menu yang disediakan" << endl;
+    }
+    else{
+        break;
+    }
+}   
+if(pilihan==1){
+    CariBuku();
+}
+else{
+    return;
+}
+    
+}
+
 void login(){
     int menu;
     cout << "Menu Perpustakaan Sederhana"<<endl;
     cout << "==========================="<<endl;
     cout << "1. Login sebagai Petugas"<<endl;
-    cout << "2. Login sebagai Siswa"<<endl;
+    cout << "2. Login sebagai Siswa"<<endl; 
+    
+    while(true) { 
     cout << "Pilihan Menu : ";
     cin >> menu;
     cin.ignore();
+
+    if(menu > 2) {
+        cout << "Tolong pilih sesuai menu!" << endl;
+    }
+    else if(menu == 0){
+        cout << "Tolong pilih sesuai menu!" << endl;
+    }
+    else{
+        break;
+    }
+    }
+    
 
     if(menu==1){
         string username;
@@ -502,6 +542,8 @@ void login(){
 
         ifstream file("petugas.txt");
         string line;
+        bool ketemu = false;
+
         while(getline(file,line)){
             int posisi1 = line.find(';');
             int posisi2 = line.find(';',posisi1 + 1);
@@ -513,19 +555,84 @@ void login(){
             string statusAdmin = line.substr(posisi2 + 1, posisi3-posisi2-1);
             string passwordAdmin = line.substr(posisi3 + 1,posisi4-posisi3-1);
 
-            if(username == usernameAdmin && password == passwordAdmin && statusAdmin == "1"){
-                InterfaceAdminUtama();
-            }
-            else if(username == usernameAdmin && password == passwordAdmin && statusAdmin == "0"){
-                InterfaceAdminBiasa();
-            }
-            else{
-
+            if(username == usernameAdmin){
+                ketemu = true;
+                if(password == passwordAdmin){
+                    if(statusAdmin = "1"){
+                        InterfaceAdminUtama();
+                    }
+                    else{
+                        InterfaceAdminBiasa();
+                    }
+                }
+                else{
+                    cout << "Password tidak terdeteksi!";
+                }
+                break;
             }
 
         }
         file.close();
+
+        if(!ketemu){
+            cout << "Data tidak ditemukan";
+        }
     }
+    
+    else if(menu==2){
+        string nama, kode;
+        cout << "Masukkan Username : ";
+        getline(cin,nama);
+        cout << "Masukkan Kode Anggota : ";
+        getline(cin,kode);
+
+        ifstream file("anggota.txt");
+        string line;
+        bool ketemu = false;
+
+        while(getline(file,line)){
+            int posisi1 = line.find(';');
+            int posisi2 = line.find(';',posisi1 + 1);
+            int posisi3 = line.find(';',posisi2 + 1);
+            int posisi4 = line.find(';',posisi3 + 1);
+            int posisi5 = line.find(';',posisi4 + 1);
+            int posisi6 = line.find(';',posisi5 + 1);
+
+            string id = line.substr(0,posisi1);
+            string kodeSiswa = line.substr(posisi1 + 1, posisi2-posisi1-1);
+            string namaSiswa = line.substr(posisi2 + 1, posisi3-posisi2-1);
+            string tanggal = line.substr(posisi3 + 1, posisi4-posisi3-1);
+            string alamat = line.substr(posisi4 + 1, posisi5-posisi4-1);
+            string email = line.substr(posisi5 + 1, posisi6-posisi5-1);
+            string statusSiswa = line.substr(posisi6 + 1);
+
+        if(nama == namaSiswa) {
+            ketemu = true;
+            if(kode == kodeSiswa){
+                if(statusSiswa == "0"){
+                    cout << "Akun Tidak Aktif";
+                }
+                else{
+                    InterfaceAnggota();
+                }
+            }
+            else{
+                cout << "Kode Berbeda";
+            }
+            break;
+        }
+    }
+    file.close();
+
+    if(!ketemu){
+        cout << "Data tidak ketemu" << endl;
+    }
+         
+    }
+    else{
+    cout << "Tolong pilih sesuai inputan";
+    }
+
 }
 
 int main(){

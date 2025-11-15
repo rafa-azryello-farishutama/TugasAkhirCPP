@@ -2,4 +2,4 @@
 000002;20040229001;Maulana Qubro;29-2-2004;Desa Bandung;maulana@gmail.com;1
 000003;20230314001;;14-3-2023;Desa Jabon;yanz@gmil.com;1
 000004;20090802001;Jobod;2-8-2009;Ngantru;jobod@gmail.com;1
-000005;20030404001;Muhammad Rezki;4-4-2003;Desa Tanjung;rezki@gmail.com;1
+000005;20030404001;Muhammad Rezki;4-4-2003;Desa Tanjung;rezki@gmail.com;0
