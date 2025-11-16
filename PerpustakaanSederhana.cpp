@@ -453,10 +453,112 @@ void RequestPeminjaman(){
         } else {
             cout << "ID Tidak ditemukan" << endl;
         }
+
+    while(true){
+    cout << "Masukkan Tahun : ";
+    cin >> tahunPinjam;
+    if(tahunPinjam<2025) {
+        cout << "Tolong memilih Tahun yang benar"<<endl;
+       }
+    else if(tahunPinjam!+1){
+        cout << "Tolong jangan melebihi 1 Tahun"<<endl;
+       }   
+    else{
+        break;
     }
+}
 
-    cout << "Masukkan Tanggal Peminjaman : ";
+while(true){
+    cout << "Masukkan Bulan : ";
+    cin >> bulanPinjam;
+    if(bulanPinjam>12){
+        cout << "Tolong memilih bulan yang benar"<<endl;
+    }
+    else if(bulanPinjam == 0){
+        cout << "Bulan tidak boleh kosong" << endl;
+    }
+    else{
+        break;
+    }
+}
 
+if(bulanPinjam == 1 || bulanPinjam == 3 || bulanPinjam == 5 || bulanPinjam == 7 ||
+   bulanPinjam == 8 || bulanPinjam == 10 || bulanPinjam == 12 ){
+    while(true){
+        cout << "Masukkan Tanggal : ";
+        cin >> tanggalPinjam;
+
+        if(tanggalPinjam > 31){
+            cout << "Tanggal Tidak boleh melebihi batas bulan" << endl;
+        }
+        else if(tanggalPinjam == 0){
+            cout << "Tanggal Tidak boleh kosong" << endl;
+        }
+        else{
+            break;
+        }
+    }
+}
+
+if(bulanPinjam == 4 || bulanPinjam == 6 || bulanPinjam == 9 || bulanPinjam == 11){
+    while(true){
+        cout << "Masukkan Tanggal : ";
+        cin >> tanggalPinjam;
+
+        if(tanggalPinjam > 30){
+            cout << "Tanggal tidak boleh melebihi batas bulan" << endl;
+        }
+        else if(tanggalPinjam == 0){
+            cout << "Tanggal tidak boleh kosong" << endl;
+        }
+        else{
+            break;
+        }
+
+
+    }
+}
+
+if(bulanPinjam == 2){
+    if((tahunPinjam%400 == 0) || (tahunPinjam%4==0 && tahunPinjam%100!=0)){
+        while(true){
+            cout << "Masukkan Tanggal : ";
+            cin >> tanggalPinjam;
+
+            if(tanggalPinjam > 29){
+                cout << "Tanggal tidak boleh melebihi batas bulan" << endl;
+            }
+            else if(tanggalPinjam == 0){
+                cout << "Tanggal tidak boleh kosong";
+            }
+            else{
+                break;
+            }
+        }
+
+            
+    }
+    else{
+        while(true){
+        cout << "Masukkan Tanggal : ";
+        cin >> tanggalPinjam;
+
+        if(tanggalPinjam > 28){
+            cout << "Tanggal tidak boleh melebihi batas" << endl;
+            }
+        else if(tanggalPinjam == 0){
+            cout << "Tanggal tidak boleh kosong";
+            }
+        else{
+            break;
+            }
+        }
+    }
+}
+    ofstream fileOutput("requestpeminjaman.txt",ios::app);
+fileOutput << x.idanggota << ";"<< kodeanggota << ";" << x.nama << ";" << tanggalPinjam << "-" << bulanPinjam << 
+             "-" << tahunPinjam << ";" << x.alamat << ";" << x.email << !";
+cout << "Request telah dikirim!";
 }
 
 void InterfaceAdminUtama(){
@@ -697,5 +799,6 @@ void login(){
 int main(){
     login();
 }
+
 
 
