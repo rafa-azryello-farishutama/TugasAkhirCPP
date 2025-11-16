@@ -402,7 +402,11 @@ void CariBuku(){
 
 struct peminjaman{
     int tanggalPinjam;
+    int bulanPinjam;
+    int tahunPinjam;
     int tanggalKembali;
+    int bulanKembali;
+    int tahunKembali;
     string idpeminjaman;
     int status;
     int denda;
@@ -456,6 +460,7 @@ void RequestPeminjaman(){
     }
 
     cout << "Masukkan Tanggal Peminjaman : ";
+    
 
 }
 
