@@ -400,6 +400,65 @@ void CariBuku(){
     file.close();
 }
 
+struct peminjaman{
+    int tanggalPinjam;
+    int tanggalKembali;
+    string idpeminjaman;
+    int status;
+    int denda;
+};
+
+void RequestPeminjaman(){
+    peminjaman m;
+    string idanggota,idbuku;
+    while(true){ 
+    cout << "Masukkan ID Anggota: ";
+    getline(cin,idanggota);
+
+    ifstream file("anggota.txt");
+    string line;
+    bool found = false;
+    while(getline(file,line)){
+        if(line.find(idanggota)!= string::npos){
+            found = true;
+            break;
+        }
+    }
+    file.close();
+
+    if(found){
+        break;
+    } else {
+        cout << "ID tidak ditemukan" << endl;
+    }
+    }
+
+    while(true){
+        cout << "Masukkan ID Buku : ";
+        getline(cin,idbuku);
+
+        ifstream File("buku.txt");
+        string line;
+        bool found = false;
+        while(getline(File,line)){
+            if(line.find(idbuku)!=string::npos){
+                found = true;
+                break;
+            }
+        }
+        File.close();
+
+        if(found){
+            break;
+        } else {
+            cout << "ID Tidak ditemukan" << endl;
+        }
+    }
+
+    cout << "Masukkan Tanggal Peminjaman : ";
+
+}
+
 void InterfaceAdminUtama(){
     string menu;
     int pilih;
@@ -558,7 +617,7 @@ void login(){
             if(username == usernameAdmin){
                 ketemu = true;
                 if(password == passwordAdmin){
-                    if(statusAdmin = "1"){
+                    if(statusAdmin == "1"){
                         InterfaceAdminUtama();
                     }
                     else{
