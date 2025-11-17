@@ -457,15 +457,17 @@ void RequestPeminjaman(){
         } else {
             cout << "ID Tidak ditemukan" << endl;
         }
+    }
 
+    cout << endl << "Masukkan Tanggal Pinjam" << endl;
     while(true){
     cout << "Masukkan Tahun : ";
-    cin >> tahunPinjam;
-    if(tahunPinjam<2025) {
-        cout << "Tolong memilih Tahun yang benar"<<endl;
+    cin >> m.tahunPinjam;
+    if(m.tahunPinjam>2025) {
+        cout << "Tolong jangan melebihi batas Tahun"<<endl;
        }
-    else if(tahunPinjam!+1){
-        cout << "Tolong jangan melebihi 1 Tahun"<<endl;
+    else if(m.tahunPinjam==0){
+        cout << "Tolong jangan mengkosongi tahun"<<endl;
        }   
     else{
         break;
@@ -474,11 +476,11 @@ void RequestPeminjaman(){
 
 while(true){
     cout << "Masukkan Bulan : ";
-    cin >> bulanPinjam;
-    if(bulanPinjam>12){
+    cin >> m.bulanPinjam;
+    if(m.bulanPinjam>12){
         cout << "Tolong memilih bulan yang benar"<<endl;
     }
-    else if(bulanPinjam == 0){
+    else if(m.bulanPinjam == 0){
         cout << "Bulan tidak boleh kosong" << endl;
     }
     else{
@@ -486,16 +488,16 @@ while(true){
     }
 }
 
-if(bulanPinjam == 1 || bulanPinjam == 3 || bulanPinjam == 5 || bulanPinjam == 7 ||
-   bulanPinjam == 8 || bulanPinjam == 10 || bulanPinjam == 12 ){
+if(m.bulanPinjam == 1 || m.bulanPinjam == 3 || m.bulanPinjam == 5 || m.bulanPinjam == 7 ||
+   m.bulanPinjam == 8 || m.bulanPinjam == 10 || m.bulanPinjam == 12 ){
     while(true){
         cout << "Masukkan Tanggal : ";
-        cin >> tanggalPinjam;
+        cin >> m.tanggalPinjam;
 
-        if(tanggalPinjam > 31){
+        if(m.tanggalPinjam > 31){
             cout << "Tanggal Tidak boleh melebihi batas bulan" << endl;
         }
-        else if(tanggalPinjam == 0){
+        else if(m.tanggalPinjam == 0){
             cout << "Tanggal Tidak boleh kosong" << endl;
         }
         else{
@@ -504,15 +506,15 @@ if(bulanPinjam == 1 || bulanPinjam == 3 || bulanPinjam == 5 || bulanPinjam == 7 
     }
 }
 
-if(bulanPinjam == 4 || bulanPinjam == 6 || bulanPinjam == 9 || bulanPinjam == 11){
+if(m.bulanPinjam == 4 || m.bulanPinjam == 6 || m.bulanPinjam == 9 || m.bulanPinjam == 11){
     while(true){
         cout << "Masukkan Tanggal : ";
-        cin >> tanggalPinjam;
+        cin >> m.tanggalPinjam;
 
-        if(tanggalPinjam > 30){
+        if(m.tanggalPinjam > 30){
             cout << "Tanggal tidak boleh melebihi batas bulan" << endl;
         }
-        else if(tanggalPinjam == 0){
+        else if(m.tanggalPinjam == 0){
             cout << "Tanggal tidak boleh kosong" << endl;
         }
         else{
@@ -523,16 +525,16 @@ if(bulanPinjam == 4 || bulanPinjam == 6 || bulanPinjam == 9 || bulanPinjam == 11
     }
 }
 
-if(bulanPinjam == 2){
-    if((tahunPinjam%400 == 0) || (tahunPinjam%4==0 && tahunPinjam%100!=0)){
+if(m.bulanPinjam == 2){
+    if((m.tahunPinjam%400 == 0) || (m.tahunPinjam%4==0 && m.tahunPinjam%100!=0)){
         while(true){
             cout << "Masukkan Tanggal : ";
-            cin >> tanggalPinjam;
+            cin >> m.tanggalPinjam;
 
-            if(tanggalPinjam > 29){
+            if(m.tanggalPinjam > 29){
                 cout << "Tanggal tidak boleh melebihi batas bulan" << endl;
             }
-            else if(tanggalPinjam == 0){
+            else if(m.tanggalPinjam == 0){
                 cout << "Tanggal tidak boleh kosong";
             }
             else{
@@ -545,12 +547,12 @@ if(bulanPinjam == 2){
     else{
         while(true){
         cout << "Masukkan Tanggal : ";
-        cin >> tanggalPinjam;
+        cin >> m.tanggalPinjam;
 
-        if(tanggalPinjam > 28){
+        if(m.tanggalPinjam > 28){
             cout << "Tanggal tidak boleh melebihi batas" << endl;
             }
-        else if(tanggalPinjam == 0){
+        else if(m.tanggalPinjam == 0){
             cout << "Tanggal tidak boleh kosong";
             }
         else{
@@ -559,11 +561,47 @@ if(bulanPinjam == 2){
         }
     }
 }
-    ofstream fileOutput("requestpeminjaman.txt",ios::app);
-fileOutput << x.idanggota << ";"<< kodeanggota << ";" << x.nama << ";" << tanggalPinjam << "-" << bulanPinjam << 
-             "-" << tahunPinjam << ";" << x.alamat << ";" << x.email << !";
-cout << "Request telah dikirim!";
+
+m.tanggalKembali = m.tanggalPinjam;
+m.bulanKembali = m.bulanPinjam;
+m.tahunKembali = m.tahunPinjam;
+
+int hariBulan;
+
+if(m.bulanKembali == 1 || m.bulanKembali == 3 || m.bulanKembali == 5 || m.bulanKembali == 7 ||
+   m.bulanKembali == 8 || m.bulanKembali == 10 || m.bulanKembali == 12 ){
+    hariBulan = 31;
+   }
+else if(m.bulanKembali == 4 || m.bulanKembali == 6 || m.bulanKembali == 9 || m.bulanKembali == 11){
+    hariBulan = 30;
 }
+else{
+    if((m.tahunKembali%400 == 0) || (m.tahunKembali%4==0 && m.tahunKembali%100!=0)){
+        hariBulan = 29;
+    }
+    else{
+        hariBulan = 28;
+    }
+}
+
+m.tanggalKembali = m.tanggalKembali + 7;
+
+if(m.tanggalKembali > hariBulan){
+    m.tanggalKembali = m.tanggalKembali - hariBulan;
+    m.bulanKembali = m.bulanKembali + 1;
+    if(m.bulanKembali > 12){
+        m.bulanKembali = 1;
+        m.tahunKembali = m.tahunKembali + 1;
+    }
+}
+
+    ofstream fileOutput("requestpeminjaman.txt",ios::app);
+fileOutput << idbuku << ";"<< idanggota << ";" << m.tanggalPinjam << "-" << m.bulanPinjam <<
+             "-" << m.tahunPinjam << ";" << m.tanggalKembali << "-" << m.bulanKembali << "-" <<
+             m.tahunKembali << endl;
+cout << "Request telah dikirim!";
+
+    }
 
 void InterfaceAdminUtama(){
     string menu;
@@ -652,12 +690,13 @@ void InterfaceAnggota(){
     int pilihan;
     cout << endl << "Daftar Menu" << endl;
     cout << "1. Cari Buku" << endl;
+    cout << "2. Request Peminjaman" << endl;
     while(true){
     cout << "Pilihan Menu : ";
     getline(cin,menu);
 
     pilihan = stoi(menu);
-    if(pilihan>1){
+    if(pilihan>2){
         cout << "Tolong pilih menu yang disediakan" << endl;
     }
     else{
@@ -666,6 +705,9 @@ void InterfaceAnggota(){
 }   
 if(pilihan==1){
     CariBuku();
+}
+else if(pilihan==2){
+    RequestPeminjaman();
 }
 else{
     return;
@@ -803,6 +845,5 @@ void login(){
 int main(){
     login();
 }
-
 
 
