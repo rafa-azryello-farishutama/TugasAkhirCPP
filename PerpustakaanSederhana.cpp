@@ -34,6 +34,12 @@ struct petugas{
 
 int HitungUrutan(string Tahun,string Bulan,string Tanggal){
     ifstream file("anggota.txt"); 
+    if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     string line;
     int count = 0;
     string pencarian = Tahun + Bulan + Tanggal;
@@ -50,6 +56,12 @@ int HitungUrutan(string Tahun,string Bulan,string Tanggal){
 
 int MenghasilkanID(){
     ifstream file("anggota.txt");
+    if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     string line;
     int count = 0;
 
@@ -62,6 +74,12 @@ int MenghasilkanID(){
 
 int MenghasilkanIDbuku(){
     ifstream file("buku.txt");
+    if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     string line;
     int count = 0;
 
@@ -219,6 +237,12 @@ while(id.length() < 6){
 x.idanggota = id;
 
 ofstream fileOutput("anggota.txt",ios::app);
+if (fileOutput.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
 fileOutput << x.idanggota << ";"<< kodeanggota << ";" << x.nama << ";" << x.tanggal << "-" << x.bulan << 
              "-" << x.tahun << ";" << x.alamat << ";" << x.email << ";" << x.status<<endl;
 fileOutput.close();
@@ -278,6 +302,12 @@ a.idbuku = "BK" + idBuku;
     cin >> a.stok;
 
     ofstream fileOutput("buku.txt",ios::app);
+    if (fileOutput.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     fileOutput << a.idbuku << ";" << a.isbn << ";" << a.judul << ";" << a.pengarang 
                << ";" << a.penerbit << ";" << a.tahunTerbit << ";" << a.stok << endl;
     fileOutput.close();
@@ -287,6 +317,12 @@ a.idbuku = "BK" + idBuku;
 
 int MenghasilkanIDadmin(){
     ifstream file("petugas.txt");
+    if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     string line;
     int count = 0;
 
@@ -315,6 +351,12 @@ void TambahAdmin(){
 
 
     ofstream fileOutput("petugas.txt",ios::app);
+    if (fileOutput.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     fileOutput << b.idpetugas << ";" << b.username << ";" << b.noadmin << ";"
                << b.password << ";" << b.nama << endl;
     fileOutput.close();
@@ -327,6 +369,12 @@ void CariAnggota() {
     getline(cin,katakunci);
 
     ifstream fileOutput("anggota.txt");
+    if (fileOutput.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     string line;
     while(getline(fileOutput,line)){
         if(line.find(katakunci)!= string::npos){
@@ -367,6 +415,12 @@ void CariBuku(){
     getline(cin,katakunci);
 
     ifstream file("buku.txt");
+    if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     string line;
     while(getline(file,line)){
         if(line.find(katakunci)!=string::npos){
@@ -420,6 +474,12 @@ void RequestPeminjaman(){
     getline(cin,idanggota);
 
     ifstream file("anggota.txt");
+    if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
     string line;
     bool found = false;
     while(getline(file,line)){
@@ -442,6 +502,12 @@ void RequestPeminjaman(){
         getline(cin,idbuku);
 
         ifstream File("buku.txt");
+        if (File.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
         string line;
         bool found = false;
         while(getline(File,line)){
@@ -596,6 +662,12 @@ if(m.tanggalKembali > hariBulan){
 }
 
     ofstream fileOutput("requestpeminjaman.txt",ios::app);
+    if (fileOutput.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
 fileOutput << idbuku << ";"<< idanggota << ";" << m.tanggalPinjam << "-" << m.bulanPinjam <<
              "-" << m.tahunPinjam << ";" << m.tanggalKembali << "-" << m.bulanKembali << "-" <<
              m.tahunKembali << endl;
@@ -748,6 +820,12 @@ void login(){
         getline(cin,password);
 
         ifstream file("petugas.txt");
+        if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
         string line;
         bool ketemu = false;
 
@@ -794,6 +872,12 @@ void login(){
         getline(cin,kode);
 
         ifstream file("anggota.txt");
+        if (file.is_open()){
+        cout << "File telah sukses dibuka!\n";
+    }
+    else {
+        cout << "File gagal dibuka\n";
+    }
         string line;
         bool ketemu = false;
 
