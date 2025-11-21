@@ -660,6 +660,16 @@ if(m.tanggalKembali > hariBulan){
         m.tahunKembali = m.tahunKembali + 1;
     }
 }
+int nomor = 1;
+ifstream file("requestpeminjaman.txt");
+string baris;
+while(getline(file,baris)){
+    string cekNomor = to_string(nomor);
+    if(baris.find(cekNomor)!=string::npos){
+        nomor = nomor + 1;
+    }
+}
+file.close();
 
     ofstream fileOutput("requestpeminjaman.txt",ios::app);
     if (fileOutput.is_open()){
@@ -668,12 +678,55 @@ if(m.tanggalKembali > hariBulan){
     else {
         cout << "File gagal dibuka\n";
     }
-fileOutput << idbuku << ";"<< idanggota << ";" << m.tanggalPinjam << "-" << m.bulanPinjam <<
+fileOutput << nomor << ";" << idbuku << ";"<< idanggota << ";" << m.tanggalPinjam << "-" << m.bulanPinjam <<
              "-" << m.tahunPinjam << ";" << m.tanggalKembali << "-" << m.bulanKembali << "-" <<
              m.tahunKembali << endl;
 cout << "Request telah dikirim!";
 
     }
+
+void peminjaman(){
+    ifstream file("requestpeminjaman.txt");
+    string line;
+
+    while(getline(file,line)){
+        int pos1 = line.find(';');
+        int pos2 = line.find(';',pos1+1);
+        int pos3 = line.find(';',pos2+1);
+        int pos4 = line.find(';',pos3+1);
+
+        string nomor = line.substr(0,pos1);
+        string buku = line.substr(pos1+1,pos2-pos1-1);
+        string anggota = line.substr(pos2+1,pos3-pos2-1);
+        string tanggal = line.substr(pos3+1,pos4-pos3-1);
+        string kembali = line.substr(pos4+1);
+
+        cout << nomor << ". " << "Buku :  " << buku << ", "
+             << "Anggota : " << anggota << ", " << "Tanggal Pinjam : "
+             << tanggal << ", " << "Tanggal Kembali : " << kembali << endl;
+    }
+    file.close();
+
+    
+while(true) { 
+        int pilihan;
+        cout << "Masukkan angka yang ingin anda approve (Pilih 0 untuk berhenti) : ";
+        cin >> pilihan;
+        if(pilihan==0){ break; }
+        string kata = to_string(pilihan);
+
+        ifstream file("requestpeminjaman.txt");
+        string baris;
+        while(getline(file,baris)){
+            if(line.find(kata)!=string::npos){
+                ofstream output("peminjaman.txt",ios::app);
+                output << baris << endl;
+                output.close();
+            }
+        }
+        file.close();
+    }
+}
 
 void InterfaceAdminUtama(){
     string menu;
@@ -684,13 +737,14 @@ void InterfaceAdminUtama(){
     cout << "3. Cari Anggota" << endl;
     cout << "4. Cari Buku" << endl;
     cout << "5. Tambah Admin" << endl;
+    cout << "6. Peminjaman" << endl;
     
     while(true){
     cout << "Masukkan Pilihan : ";
     getline(cin,menu);
     pilih = stoi(menu);
 
-    if(pilih > 5){
+    if(pilih > 6){
         cout << "Tolong Pilih sesuai angka!";
     }
     else if(pilih == 0){
@@ -715,6 +769,9 @@ void InterfaceAdminUtama(){
     }
     else if(pilih==5){
         TambahAdmin();
+    }
+    else if(pilih==6){
+        peminjaman();
     }
 }
 
