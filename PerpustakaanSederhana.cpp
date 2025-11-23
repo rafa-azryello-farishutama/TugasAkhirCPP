@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <limits>
+#include <sstream>
 using namespace std;
 
 struct anggota{
@@ -31,6 +33,8 @@ struct petugas{
     string nama;
     int noadmin;
 };
+
+string idLoginSiswa = "";
 
 int HitungUrutan(string Tahun,string Bulan,string Tanggal){
     ifstream file("anggota.txt"); 
@@ -248,6 +252,20 @@ fileOutput << x.idanggota << ";"<< kodeanggota << ";" << x.nama << ";" << x.tang
 fileOutput.close();
 cout << "Data Siswa berhasil ditambahkan!";
 
+string nol;
+while(true){
+cout << "Menu Kembali (ketik 0) : ";
+getline(cin,nol);
+int input = stoi(nol);
+if(input > 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else if(input < 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else { break; }
+}
+return;
 }
 
 void TambahBuku(){
@@ -312,7 +330,20 @@ a.idbuku = "BK" + idBuku;
                << ";" << a.penerbit << ";" << a.tahunTerbit << ";" << a.stok << endl;
     fileOutput.close();
     cout << "Data Buku berhasil ditambahkan!";
-
+string nol;
+while(true){
+cout << "Menu Kembali (ketik 0) : ";
+getline(cin,nol);
+int input = stoi(nol);
+if(input > 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else if(input < 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else { break; }
+}
+return;
 }
 
 int MenghasilkanIDadmin(){
@@ -407,6 +438,20 @@ void CariAnggota() {
     }
     cout << "Data tidak ditemukan!";
     fileOutput.close();
+string nol;
+while(true){
+cout << "Menu Kembali (ketik 0) : ";
+getline(cin,nol);
+int input = stoi(nol);
+if(input > 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else if(input < 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else { break; }
+}
+return;
 }
 
 void CariBuku(){
@@ -452,6 +497,21 @@ void CariBuku(){
     }
     cout << "Data tidak ditemukan!";
     file.close();
+
+string nol;
+while(true){
+cout << "Menu Kembali (ketik 0) : ";
+getline(cin,nol);
+int input = stoi(nol);
+if(input > 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else if(input < 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else { break; }
+}
+return;
 }
 
 struct peminjaman{
@@ -669,6 +729,12 @@ while(getline(file,baris)){
         nomor = nomor + 1;
     }
 }
+
+string angka=to_string(nomor);
+while(angka.length() < 5){
+    angka = "0" + angka; 
+}
+
 file.close();
 
     ofstream fileOutput("requestpeminjaman.txt",ios::app);
@@ -678,11 +744,25 @@ file.close();
     else {
         cout << "File gagal dibuka\n";
     }
-fileOutput << nomor << ";" << idbuku << ";"<< idanggota << ";" << m.tanggalPinjam << "-" << m.bulanPinjam <<
+fileOutput << angka << ";" << idbuku << ";"<< idanggota << ";" << m.tanggalPinjam << "-" << m.bulanPinjam <<
              "-" << m.tahunPinjam << ";" << m.tanggalKembali << "-" << m.bulanKembali << "-" <<
              m.tahunKembali << endl;
-cout << "Request telah dikirim!";
+cout << "Request telah dikirim!" << endl;
 
+string nol;
+while(true){
+cout << "Menu Kembali (ketik 0) : ";
+getline(cin,nol);
+int input = stoi(nol);
+if(input > 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else if(input < 0){
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+}
+else { break; }
+}
+return;
     }
 
 void peminjaman(){
@@ -708,29 +788,86 @@ void peminjaman(){
     file.close();
 
     
-while(true) { 
-        int pilihan;
-        cout << "Masukkan angka yang ingin anda approve (Pilih 0 untuk berhenti) : ";
-        cin >> pilihan;
-        if(pilihan==0){ break; }
-        string kata = to_string(pilihan);
+while (true) {
+    string input;
+    cout << "Masukkan angka yang ingin anda approve (Pilih 0 untuk berhenti) : ";
+    getline(cin, input);
 
-        ifstream file("requestpeminjaman.txt");
-        string baris;
-        while(getline(file,baris)){
-            if(line.find(kata)!=string::npos){
-                ofstream output("peminjaman.txt",ios::app);
-                output << baris << endl;
-                output.close();
-            }
+    if (input == "0") break;
+
+    bool valid = true;
+    for (char c : input) {
+        if (!isdigit(c)) { valid = false; break; }
+    }
+    if (!valid) {
+        cout << "Input harus berupa angka!\n";
+        continue;
+    }
+
+    ifstream file2("requestpeminjaman.txt");
+    string baris;
+    bool ketemu = false;
+
+    while (getline(file2, baris)) {
+
+        if (baris.empty()) continue;
+
+        int pos = baris.find(';');
+        if (pos == string::npos) continue;
+
+        string idRequest = baris.substr(0, pos);
+
+        if (idRequest == input) {
+            ofstream output("peminjaman.txt", ios::app);
+            output << baris << endl;
+            output.close();
+            ketemu = true;
+            cout << "Peminjaman disetujui!\n";
+            break;
         }
-        file.close();
+    }
+
+    if (!ketemu)
+        cout << "Request tidak ditemukan.\n";
+
+    file2.close();
+}
+
+
+    string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');  
+    while (true) {
+    cout << "Menu Kembali (ketik 0) : ";
+    getline(cin, nol);
+
+    if (nol == "0") {
+        return; 
+    }
+    else{
+    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
     }
 }
 
+}
+
+void lihatPeminjaman() {
+    ifstream file("peminjaman.txt");
+    string line;
+
+    while(getline(file, line)){
+        int posisi1 = line.find(';');
+        string idPeminjam = line.substr(0, posisi1);
+
+        if(idPeminjam == idLoginSiswa){
+            cout << line << endl;
+        }
+    }
+
+    file.close();
+}
 void InterfaceAdminUtama(){
-    string menu;
     int pilih;
+    do{
     cout << "Menu Admin Utama" << endl;
     cout << "1. Tambah Anggota" << endl;
     cout << "2. Tambah Buku" << endl;
@@ -738,24 +875,18 @@ void InterfaceAdminUtama(){
     cout << "4. Cari Buku" << endl;
     cout << "5. Tambah Admin" << endl;
     cout << "6. Peminjaman" << endl;
+    cout << "0. Berhenti" << endl;
     
-    while(true){
-    cout << "Masukkan Pilihan : ";
-    getline(cin,menu);
-    pilih = stoi(menu);
+    cout << "Masukkan Menu : ";
+    cin >> pilih;
+    cin.ignore();
+    cout << endl;
 
-    if(pilih > 6){
-        cout << "Tolong Pilih sesuai angka!";
-    }
-    else if(pilih == 0){
-        cout << "Menu tidak boleh kosong!";
-    }
-    else{
+    if(pilih==0){
+        cout << "Anda memilih berhenti dari program!";
         break;
     }
-    }
-
-    if(pilih==1){
+    else if(pilih==1){
         TambahAnggota();
     }
     else if(pilih==2){
@@ -773,34 +904,30 @@ void InterfaceAdminUtama(){
     else if(pilih==6){
         peminjaman();
     }
+} while(true);
 }
 
-void InterfaceAdminBiasa(){
-    string menu;
+void AdminBiasa(){
     int pilih;
+    
+    do { 
     cout << "Menu Admin Utama" << endl;
     cout << "1. Tambah Anggota" << endl;
     cout << "2. Tambah Buku" << endl;
     cout << "3. Cari Anggota" << endl;
     cout << "4. Cari Buku" << endl;
+    cout << "5. Peminjaman" << endl;
+    cout << "0. Berhenti" << endl;
     
-    while(true){
     cout << "Masukkan Pilihan : ";
-    getline(cin,menu);
-    pilih = stoi(menu);
+    cin >> pilih;
+    cin.ignore();
+    cout << endl;
 
-    if(pilih > 5){
-        cout << "Tolong Pilih sesuai angka!";
-    }
-    else if(pilih == 0){
-        cout << "Menu tidak boleh kosong!";
-    }
-    else{
+    if(pilih==0){
         break;
     }
-    }
-
-    if(pilih==1){
+    else if(pilih==1){
         TambahAnggota();
     }
     else if(pilih==2){
@@ -812,37 +939,41 @@ void InterfaceAdminBiasa(){
     else if(pilih==4){
         CariBuku();
     }
+    else if(pilih==5){
+        peminjaman();
+    }
+} while(true);
 }
 
 void InterfaceAnggota(){
-    string menu;
     int pilihan;
+    do {
     cout << endl << "Daftar Menu" << endl;
     cout << "1. Cari Buku" << endl;
     cout << "2. Request Peminjaman" << endl;
-    while(true){
-    cout << "Pilihan Menu : ";
-    getline(cin,menu);
+    cout << "3. Lihat Peminjaman" << endl;
+    cout << "0. Berhenti" << endl;
+    
+    cout << "Masukkan Menu : ";
+    cin >> pilihan;
+    cin.ignore();
+    cout << endl;
 
-    pilihan = stoi(menu);
-    if(pilihan>2){
-        cout << "Tolong pilih menu yang disediakan" << endl;
-    }
-    else{
-        break;
-    }
-}   
+if(pilihan==0){
+    break;
+}
 if(pilihan==1){
     CariBuku();
 }
 else if(pilihan==2){
     RequestPeminjaman();
 }
-else{
-    return;
+else if(pilihan==3){
+    lihatPeminjaman();
 }
-    
+} while(true);
 }
+
 
 void login(){
     int menu;
@@ -901,10 +1032,14 @@ void login(){
                 ketemu = true;
                 if(password == passwordAdmin){
                     if(statusAdmin == "1"){
+                        cout << "Login berhasil!" << endl;
+                        system("cls");
                         InterfaceAdminUtama();
                     }
                     else{
-                        InterfaceAdminBiasa();
+                        cout << "Login berhasil!" << endl;
+                        system("cls");
+                        AdminBiasa();
                     }
                 }
                 else{
@@ -923,6 +1058,7 @@ void login(){
     
     else if(menu==2){
         string nama, kode;
+        string idLoginSiswa = "";
         cout << "Masukkan Username : ";
         getline(cin,nama);
         cout << "Masukkan Kode Anggota : ";
