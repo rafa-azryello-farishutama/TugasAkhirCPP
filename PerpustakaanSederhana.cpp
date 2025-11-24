@@ -39,10 +39,8 @@ string idLoginSiswa = "";
 int HitungUrutan(string Tahun,string Bulan,string Tanggal){
     ifstream file("anggota.txt"); 
     if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     string line;
     int count = 0;
@@ -61,10 +59,8 @@ int HitungUrutan(string Tahun,string Bulan,string Tanggal){
 int MenghasilkanID(){
     ifstream file("anggota.txt");
     if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     string line;
     int count = 0;
@@ -79,10 +75,8 @@ int MenghasilkanID(){
 int MenghasilkanIDbuku(){
     ifstream file("buku.txt");
     if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     string line;
     int count = 0;
@@ -242,10 +236,8 @@ x.idanggota = id;
 
 ofstream fileOutput("anggota.txt",ios::app);
 if (fileOutput.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
 fileOutput << x.idanggota << ";"<< kodeanggota << ";" << x.nama << ";" << x.tanggal << "-" << x.bulan << 
              "-" << x.tahun << ";" << x.alamat << ";" << x.email << ";" << x.status<<endl;
@@ -321,10 +313,8 @@ a.idbuku = "BK" + idBuku;
 
     ofstream fileOutput("buku.txt",ios::app);
     if (fileOutput.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     fileOutput << a.idbuku << ";" << a.isbn << ";" << a.judul << ";" << a.pengarang 
                << ";" << a.penerbit << ";" << a.tahunTerbit << ";" << a.stok << endl;
@@ -349,10 +339,8 @@ return;
 int MenghasilkanIDadmin(){
     ifstream file("petugas.txt");
     if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     string line;
     int count = 0;
@@ -383,10 +371,8 @@ void TambahAdmin(){
 
     ofstream fileOutput("petugas.txt",ios::app);
     if (fileOutput.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     fileOutput << b.idpetugas << ";" << b.username << ";" << b.noadmin << ";"
                << b.password << ";" << b.nama << endl;
@@ -401,10 +387,8 @@ void CariAnggota() {
 
     ifstream fileOutput("anggota.txt");
     if (fileOutput.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     string line;
     while(getline(fileOutput,line)){
@@ -461,10 +445,8 @@ void CariBuku(){
 
     ifstream file("buku.txt");
     if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     string line;
     while(getline(file,line)){
@@ -526,7 +508,73 @@ struct peminjaman{
     int denda;
 };
 
-void RequestPeminjaman(){
+int MenghasilkanIDpeminjaman(){
+    ifstream file("peminjaman.txt");
+    if (file.is_open()){
+    }
+    else {
+    }
+    string line;
+    int count = 0;
+
+    while(getline(file,line)){
+        count++;
+    }
+    file.close();
+    return count+1;
+}
+
+void UpdateStok(string idbuku){
+    ifstream file("buku.txt");
+    ofstream temp("temporarybuku.txt");
+
+    string line;
+    bool ketemu = false;
+
+    while(getline(file,line)){
+        int pos1 = line.find(';');
+        int pos2 = line.find(';',pos1+1);
+        int pos3 = line.find(';',pos2+1);
+        int pos4 = line.find(';',pos3+1);
+        int pos5 = line.find(';',pos4+1);
+        int pos6 = line.find(';',pos5+1);
+
+        string id = line.substr(0,pos1);
+        string isbn = line.substr(pos1+1,pos2-pos1-1);
+        string nama = line.substr(pos2+1,pos3-pos2-1);
+        string pengarang = line.substr(pos3+1,pos4-pos3-1);
+        string penerbit = line.substr(pos4+1,pos5-pos4-1);
+        string tahunTerbit = line.substr(pos5+1,pos6-pos5-1);
+        string stokString = line.substr(pos6+1);
+
+        if(id==idbuku){
+            int stok = stoi(stokString);
+
+            if(stok>0) stok--;
+            ketemu = true;
+
+            temp << id << ";" << isbn << ";" << nama << ";"
+                 << pengarang << ";" << penerbit << ";" << 
+                 tahunTerbit << ";" << stok << endl;
+        } else {
+            temp << line << endl;
+        }
+    }
+
+    file.close();
+    temp.close();
+
+    remove("buku.txt");
+    rename("temporarybuku.txt", "buku.txt");
+
+    if(ketemu){
+        cout << "Stok Buku " << idbuku << " berhasil dikurangi 1" << endl << endl;
+    } else {
+        cout << "ID buku tiddak ditemukan!" << endl;
+    }
+}
+
+void Peminjaman(){
     peminjaman m;
     string idanggota,idbuku;
     while(true){ 
@@ -535,10 +583,8 @@ void RequestPeminjaman(){
 
     ifstream file("anggota.txt");
     if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
     string line;
     bool found = false;
@@ -563,10 +609,8 @@ void RequestPeminjaman(){
 
         ifstream File("buku.txt");
         if (File.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
         string line;
         bool found = false;
@@ -720,151 +764,31 @@ if(m.tanggalKembali > hariBulan){
         m.tahunKembali = m.tahunKembali + 1;
     }
 }
-int nomor = 1;
-ifstream file("requestpeminjaman.txt");
-string baris;
-while(getline(file,baris)){
-    string cekNomor = to_string(nomor);
-    if(baris.find(cekNomor)!=string::npos){
-        nomor = nomor + 1;
-    }
+
+int nomorReq=MenghasilkanIDpeminjaman();
+
+string req=to_string(nomorReq);
+while(req.length() < 4){
+    req = "0" + req; 
 }
 
-string angka=to_string(nomor);
-while(angka.length() < 5){
-    angka = "0" + angka; 
-}
+string angka = "PM" + req;
+int status = 1;
 
-file.close();
-
-    ofstream fileOutput("requestpeminjaman.txt",ios::app);
+    ofstream fileOutput("Peminjaman.txt",ios::app);
     if (fileOutput.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
 fileOutput << angka << ";" << idbuku << ";"<< idanggota << ";" << m.tanggalPinjam << "-" << m.bulanPinjam <<
              "-" << m.tahunPinjam << ";" << m.tanggalKembali << "-" << m.bulanKembali << "-" <<
-             m.tahunKembali << endl;
+             m.tahunKembali << ";" << status << endl;
 cout << "Request telah dikirim!" << endl;
+fileOutput.close();
 
-string nol;
-while(true){
-cout << "Menu Kembali (ketik 0) : ";
-getline(cin,nol);
-int input = stoi(nol);
-if(input > 0){
-    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
-}
-else if(input < 0){
-    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
-}
-else { break; }
-}
-return;
+UpdateStok(idbuku);
     }
 
-void peminjaman(){
-    ifstream file("requestpeminjaman.txt");
-    string line;
-
-    while(getline(file,line)){
-        int pos1 = line.find(';');
-        int pos2 = line.find(';',pos1+1);
-        int pos3 = line.find(';',pos2+1);
-        int pos4 = line.find(';',pos3+1);
-
-        string nomor = line.substr(0,pos1);
-        string buku = line.substr(pos1+1,pos2-pos1-1);
-        string anggota = line.substr(pos2+1,pos3-pos2-1);
-        string tanggal = line.substr(pos3+1,pos4-pos3-1);
-        string kembali = line.substr(pos4+1);
-
-        cout << nomor << ". " << "Buku :  " << buku << ", "
-             << "Anggota : " << anggota << ", " << "Tanggal Pinjam : "
-             << tanggal << ", " << "Tanggal Kembali : " << kembali << endl;
-    }
-    file.close();
-
-    
-while (true) {
-    string input;
-    cout << "Masukkan angka yang ingin anda approve (Pilih 0 untuk berhenti) : ";
-    getline(cin, input);
-
-    if (input == "0") break;
-
-    bool valid = true;
-    for (char c : input) {
-        if (!isdigit(c)) { valid = false; break; }
-    }
-    if (!valid) {
-        cout << "Input harus berupa angka!\n";
-        continue;
-    }
-
-    ifstream file2("requestpeminjaman.txt");
-    string baris;
-    bool ketemu = false;
-
-    while (getline(file2, baris)) {
-
-        if (baris.empty()) continue;
-
-        int pos = baris.find(';');
-        if (pos == string::npos) continue;
-
-        string idRequest = baris.substr(0, pos);
-
-        if (idRequest == input) {
-            ofstream output("peminjaman.txt", ios::app);
-            output << baris << endl;
-            output.close();
-            ketemu = true;
-            cout << "Peminjaman disetujui!\n";
-            break;
-        }
-    }
-
-    if (!ketemu)
-        cout << "Request tidak ditemukan.\n";
-
-    file2.close();
-}
-
-
-    string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');  
-    while (true) {
-    cout << "Menu Kembali (ketik 0) : ";
-    getline(cin, nol);
-
-    if (nol == "0") {
-        return; 
-    }
-    else{
-    cout << "Anda harus ketik 0 jika ingin kembali" << endl;
-    }
-}
-
-}
-
-void lihatPeminjaman() {
-    ifstream file("peminjaman.txt");
-    string line;
-
-    while(getline(file, line)){
-        int posisi1 = line.find(';');
-        string idPeminjam = line.substr(0, posisi1);
-
-        if(idPeminjam == idLoginSiswa){
-            cout << line << endl;
-        }
-    }
-
-    file.close();
-}
 void InterfaceAdminUtama(){
     int pilih;
     do{
@@ -902,7 +826,7 @@ void InterfaceAdminUtama(){
         TambahAdmin();
     }
     else if(pilih==6){
-        peminjaman();
+        Peminjaman();
     }
 } while(true);
 }
@@ -940,7 +864,7 @@ void AdminBiasa(){
         CariBuku();
     }
     else if(pilih==5){
-        peminjaman();
+        Peminjaman();
     }
 } while(true);
 }
@@ -964,12 +888,6 @@ if(pilihan==0){
 }
 if(pilihan==1){
     CariBuku();
-}
-else if(pilihan==2){
-    RequestPeminjaman();
-}
-else if(pilihan==3){
-    lihatPeminjaman();
 }
 } while(true);
 }
@@ -1009,10 +927,8 @@ void login(){
 
         ifstream file("petugas.txt");
         if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
         string line;
         bool ketemu = false;
@@ -1066,10 +982,8 @@ void login(){
 
         ifstream file("anggota.txt");
         if (file.is_open()){
-        cout << "File telah sukses dibuka!\n";
     }
     else {
-        cout << "File gagal dibuka\n";
     }
         string line;
         bool ketemu = false;
@@ -1097,6 +1011,8 @@ void login(){
                     cout << "Akun Tidak Aktif";
                 }
                 else{
+                    cout << "Login berhasil!" << endl;
+                    system("cls");
                     InterfaceAnggota();
                 }
             }
