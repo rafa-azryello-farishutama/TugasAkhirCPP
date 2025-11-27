@@ -588,20 +588,44 @@ void Peminjaman(){
     }
     string line;
     bool found = false;
+    bool aktif = false;
     while(getline(file,line)){
-        if(line.find(idanggota)!= string::npos){
+        int nomor1 = line.find(';');
+        string ID = line.substr(0,nomor1);
+        if(ID == idanggota){
             found = true;
+            int nomor2 = line.find(';',nomor1+1);
+            int nomor3 = line.find(';',nomor2+1);
+            int nomor4 = line.find(';',nomor3+1);
+            int nomor5 = line.find(';',nomor4+1);
+            int nomor6 = line.find(';',nomor5+1);
+
+            string statusSiswa = line.substr(nomor6+1);
+            int statusFinal = stoi(statusSiswa);
+            if(statusFinal == 1){
+                aktif = true;
+            } else if(statusFinal == 0){
+                cout << "Akun Siswa tidak aktif!" << endl; 
+            }
             break;
+
+
         }
     }
     file.close();
 
-    if(found){
+    if(!found){
+        cout << "ID Anggota tidak ditemukan!" << endl;
+        continue;
+     }
+     if(aktif){
         break;
-    } else {
-        cout << "ID tidak ditemukan" << endl;
+     } else {
+    cout << "Akun Siswa tidak aktif!" << endl;
+    continue;
+}
     }
-    }
+    
 
     while(true){
         cout << "Masukkan ID Buku : ";
@@ -612,22 +636,43 @@ void Peminjaman(){
     }
     else {
     }
-        string line;
+        string baris;
         bool found = false;
-        while(getline(File,line)){
-            if(line.find(idbuku)!=string::npos){
+        bool tersedia = false;
+        while(getline(File,baris)){
+            int pos1 = baris.find(';');
+            string idBuku = baris.substr(0,pos1);
+            if(idBuku == idbuku){
                 found = true;
+                int pos2 = baris.find(';',pos1+1);
+                int pos3 = baris.find(';',pos2+1);
+                int pos4 = baris.find(';',pos3+1);
+                int pos5 = baris.find(';',pos4+1);
+
+                string cekStok = baris.substr(pos5+1);
+                int stok = stoi(cekStok);
+                if(stok>0){
+                    tersedia = true;
+                } else if(stok==0){
+                    cout << "Buku tidak tersedia!" << endl;
+                }
                 break;
+                
             }
         }
         File.close();
 
-        if(found){
-            break;
-        } else {
-            cout << "ID Tidak ditemukan" << endl;
-        }
+    if(!found){
+        cout << "ID Buku tidak ditemukan!" << endl;
+        continue;
+     }
+
+     if(!tersedia){
+        continue;
+     }
+     break;
     }
+    
 
     cout << endl << "Masukkan Tanggal Pinjam" << endl;
     while(true){
@@ -789,16 +834,67 @@ fileOutput.close();
 UpdateStok(idbuku);
 
 string nol;
-    while(true){
-       cout << "Menu Kembali (ketik 0) : ";
-       getline(cin,nol);
-       if(nol == "0"){
-        break;
-        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+cin.ignore(numeric_limits<streamsize>::max(), '\n');
+while(true){
+    cout << "Menu Kembali (ketik 0) : ";
+    getline(cin,nol);
+    if(nol == "0"){
+    break;
+    } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+}
+system("cls");
+return;
     }
-    system("cls");
-    return;
+
+void UpdateStokTambah(string idBuku){
+    ifstream buku("buku.txt");
+    ofstream sementara("temporarybuku.txt");
+
+    string garis;
+    bool ketemu = false;
+
+    while(getline(buku,garis)){
+        int no1 = garis.find(';');
+        int no2 = garis.find(';',no1+1);
+        int no3 = garis.find(';',no2+1);
+        int no4 = garis.find(';',no3+1);
+        int no5 = garis.find(';',no4+1);
+        int no6 = garis.find(';',no5+1);
+
+        string IDBUKU = garis.substr(0,no1);
+        string isbnBuku = garis.substr(no1+1,no2-no1-1);
+        string namaBuku = garis.substr(no2+1,no3-no2-1);
+        string pengarangBuku = garis.substr(no3+1,no4-no3-1);
+        string penerbit = garis.substr(no4+1,no5-no4-1);
+        string tahunTerbit = garis.substr(no5+1,no6-no5-1);
+        string stokString = garis.substr(no6+1);
+
+        if(IDBUKU==idBuku){
+            int stok = stoi(stokString);
+
+            if(stok>0) stok++;
+            ketemu = true;
+
+            sementara << IDBUKU << ";" << isbnBuku << ";" << namaBuku << ";"
+                 << pengarangBuku << ";" << penerbit << ";" << 
+                 tahunTerbit << ";" << stok << endl;
+        } else {
+            sementara << garis << endl;
+        }
     }
+
+    buku.close();
+    sementara.close();
+
+    remove("buku.txt");
+    rename("temporarybuku.txt", "buku.txt");
+
+    if(ketemu){
+        cout << "Stok Buku " << idBuku << " berhasil ditambah 1" << endl << endl;
+    } else {
+        cout << "ID buku tiddak ditemukan!" << endl;
+    }
+}
 
 string cariNama(string nama){
     ifstream file2("anggota.txt");
@@ -963,12 +1059,10 @@ int hitungTanggal(int d, int m, int y){
     return y * 365 + m * 30 + d;
 }
 
-int selisih(string tanggal1, string tanggal2){
+int selisih(string tanggal1, int d2, int m2, int y2){
     int d1,m1,y1;
-    int d2,m2,y2;
 
     pecahTanggal(tanggal1,d1,m1,y1);
-    pecahTanggal(tanggal2,d2,m2,y2);
 
     int hari1 = hitungTanggal(d1,m1,y1);
     int hari2 = hitungTanggal(d2,m2,y2);
@@ -976,8 +1070,8 @@ int selisih(string tanggal1, string tanggal2){
     return hari2-hari1;
 }
 
-int hitungDenda(string batas, string kembali){
-    int terlambat = selisih(batas, kembali);
+int hitungDenda(string batas, int hari2, int bulan2, int tahun2){
+    int terlambat = selisih(batas, hari2, bulan2, tahun2);
 
     if(terlambat > 0){
         return terlambat * 1000; 
@@ -986,7 +1080,8 @@ int hitungDenda(string batas, string kembali){
 }
 
 void pengembalian(){
-    string idanggota, tanggalMengembalikan;
+    string idanggota;
+    int tahun,bulan,tanggal;
     while(true){
     cout << "Masukkan ID Anggota : ";
     cin >> idanggota;
@@ -1050,13 +1145,76 @@ void pengembalian(){
     break;
 }
 
-    cout << "Masukkan Tanggal Siswa Mengembalikan buku (DD-MM-YY) : ";
-    cin >> tanggalMengembalikan;
+    while(true) {
+    cout << "Masukkan Tanggal Siswa Mengembalikan buku (DD-MM-YY)" << endl;
+    cout << "Masukkan Tahun : ";
+    cin >> tahun;
+
+    if(tahun > 2025){
+        cout << "Tolong input Tahun yang benar!" << endl;
+    } else if(tahun==0){
+        cout << "Tahun tidak boleh kosong" << endl;
+    } else { break; }
+    }
+
+    while(true) {
+        cout << "Masukkan Bulan : ";
+        cin >> bulan;
+
+        if(bulan > 12){
+            cout << "Tolong masukkan Bulan yang benar!" << endl;
+        } else if(bulan==0){
+            cout << "Bulan tidak boleh kosong!" << endl;
+        } else { break; }
+    }
+
+    if(bulan==1 || bulan == 3 || bulan == 5 || bulan == 7 || bulan == 8 || 
+       bulan == 10 || bulan == 12){
+        while(true){
+            cout << "Masukkan Tanggal : ";
+            cin >> tanggal;
+            if(tanggal > 31 || tanggal == 0){
+                cout << "Masukkan Tanggal dengan benar dan sesuai batas bulan" << endl;
+            } else { break; }
+        }
+    }
+
+    else if(bulan==4 || bulan == 6 || bulan==9 || bulan==11 ){
+        while(true){
+            cout << "Masukkan Tanggal : ";
+            cin >> tanggal;
+            if(tanggal > 30 || tanggal == 0){
+                cout << "Masukkan Tanggal dengan benar dan sesuai batas bulan" << endl;
+            } else { break; }
+        }
+    }
+
+    else if(bulan==2){
+        if((tahun%400 == 0) || (tahun%4==0 && tahun%100!=0)){
+            while(true){
+                cout << "Masukkan Tanggal : ";
+                cin >> tanggal;
+                if(tanggal > 29 || tanggal == 0){
+                    cout << "Masukkan Tanggal dengan benar dan sesuai atas bulan" << endl;
+                } else { break; }
+            }
+        }
+        else {
+            while(true){
+                cout << "Masukkan Tanggal : ";
+                cin >> tanggal;
+                if(tanggal > 28 || tanggal == 0){
+                    cout << "Masukkan Tanggal dengan benar dan sesuai atas bulan" << endl;
+                } else { break; }
+            }
+        }
+    }
 
     string baris;
     ifstream file1("Peminjaman.txt");
     ofstream file2("pengembalian.txt", ios::app);
     string finalStatus = "";
+    string finalIDpinjam = "";
 
     while(getline(file1,baris)){
 
@@ -1074,7 +1232,7 @@ void pengembalian(){
         string status = baris.substr(posisi5+1);
 
         if(idanggota == idAnggota){
-            int keterlambatan = selisih(tanggalKembali,tanggalMengembalikan);
+            int keterlambatan = selisih(tanggalKembali,tanggal,bulan,tahun);
             int denda = 0;
             if (keterlambatan > 0)
             denda = keterlambatan * 1000;
@@ -1082,24 +1240,29 @@ void pengembalian(){
         file2 << idBuku << ";"
               << idAnggota << ";"
               << tanggalKembali << ";"
-              << tanggalMengembalikan << ";"
+              << tanggalPinjam << ";"
+              << tanggal << "-" << bulan << "-" << tahun << ";"
               << denda << endl;
         
         string Judul = NamaBuku(idBuku);
+        string Nickname = cariNama(idAnggota);
         
         cout << "Buku : " << Judul << endl
              << "ID Buku : " << idBuku << endl
+             << "Dipinjam oleh : " << Nickname << " ( " << idAnggota << " ) " << endl 
              << "Terlambat : " << keterlambatan << endl
              << "Denda : " << denda << endl << endl;
         
         finalStatus = idpinjam;
+        finalIDpinjam = idBuku;
 
         }
     }
 
     file1.close();
     file2.close();
-    UbahStatus(finalStatus);    
+    UbahStatus(finalStatus); 
+    UpdateStokTambah(finalIDpinjam);   
     string nol;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
@@ -1129,7 +1292,7 @@ void InterfaceAdminUtama(){
     
     cout << "Masukkan Menu : ";
     cin >> pilih;
-    cin.ignore();
+     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cout << endl;
 
     if(pilih==0){
