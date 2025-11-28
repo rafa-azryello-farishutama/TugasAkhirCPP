@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <limits>
-#include <sstream>
 using namespace std;
 
 struct anggota{
@@ -246,6 +245,7 @@ fileOutput.close();
 cout << "Data Siswa berhasil ditambahkan!";
 
     string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -254,7 +254,7 @@ cout << "Data Siswa berhasil ditambahkan!";
         } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
     }
     system("cls");
-    return;
+    return;;
 }
 
 void TambahBuku(){
@@ -319,6 +319,7 @@ a.idbuku = "BK" + idBuku;
     cout << "Data Buku berhasil ditambahkan!" << endl;
 
     string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -373,6 +374,7 @@ void TambahAdmin(){
     cout << "Data Admin berhasil ditambahkan!" << endl;
 
     string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -429,6 +431,7 @@ void CariAnggota() {
     fileOutput.close();
 
     string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -483,6 +486,7 @@ void CariBuku(){
     file.close();
 
     string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -988,7 +992,8 @@ void cariPeminjaman(){
     }
     file.close();
 
-    string nol;
+   string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -1128,10 +1133,25 @@ void pengembalian(){
        int kolom1 = barisCek.find(';');
        int kolom2 = barisCek.find(';',kolom1+1);
        int kolom3 = barisCek.find(';',kolom2+1);
+       int kolom4 = barisCek.find(';',kolom3+1);
+       int kolom5 = barisCek.find(';',kolom4+1);
 
+       string idPinjam = barisCek.substr(0,kolom1);
+       string cekBuku = barisCek.substr(kolom1+1,kolom2-kolom1-1);
        string cekAnggota = barisCek.substr(kolom2+1,kolom3-kolom2-1);
+       string tanggalPinjam = barisCek.substr(kolom3+1,kolom4-kolom3-1);
+       string tanggalKembali = barisCek.substr(kolom4+1,kolom5-kolom4-1);
+       string status = barisCek.substr(kolom5+1);
 
        if(idanggota == cekAnggota){
+        string f = cariNama(cekAnggota);
+        string g = NamaBuku(cekBuku);
+        cout << "Nama : " << f << endl
+             << "ID Anggota : " << cekAnggota << endl
+             << "Buku yang sedang dipinjam : " << g << endl
+             << "ID Buku : " << cekBuku << endl
+             << "Tanggal Meminjam : " << tanggalPinjam << endl
+             << "Batas Pengembalian : " << tanggalKembali << endl << endl;
         meminjam = true;
         break;
        }
@@ -1246,9 +1266,11 @@ void pengembalian(){
         string Judul = NamaBuku(idBuku);
         string Nickname = cariNama(idAnggota);
         
-        cout << "Buku : " << Judul << endl
+        cout << endl << "Buku : " << Judul << endl
              << "ID Buku : " << idBuku << endl
              << "Dipinjam oleh : " << Nickname << " ( " << idAnggota << " ) " << endl 
+             << "Tanggal Meminjam : " << tanggalPinjam << endl
+             << "Tanggal Kembali : " << tanggalKembali << endl
              << "Terlambat : " << keterlambatan << endl
              << "Denda : " << denda << endl << endl;
         
@@ -1542,6 +1564,10 @@ void AdminBiasa(){
     cout << "3. Cari Anggota" << endl;
     cout << "4. Cari Buku" << endl;
     cout << "5. Peminjaman" << endl;
+    cout << "6. Cari Peminjaman" << endl;
+    cout << "7. Pengembalian" << endl;
+    cout << "8. Non-Aktif Admin" << endl;
+    cout << "9. Hapus Buku" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Pilihan : ";
@@ -1572,6 +1598,22 @@ void AdminBiasa(){
         system("cls");
         Peminjaman();
     }
+    else if(pilih==6){
+        system("cls");
+        cariPeminjaman();
+    }
+    else if(pilih==7){
+        system("cls");
+        pengembalian();
+    }
+    else if(pilih==8){
+        system("cls");
+        NonaktifAnggota();
+    }
+    else if(pilih==9){
+        system("cls");
+        HapusBuku();
+    }
 } while(true);
 }
 
@@ -1580,8 +1622,6 @@ void InterfaceAnggota(){
     do {
     cout << endl << "Daftar Menu" << endl;
     cout << "1. Cari Buku" << endl;
-    cout << "2. Request Peminjaman" << endl;
-    cout << "3. Lihat Peminjaman" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Menu : ";
