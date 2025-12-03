@@ -2,17 +2,21 @@
 #include <fstream>
 #include <string>
 #include <limits>
+#include <algorithm>
+#include <vector>
 using namespace std;
 
 struct anggota{
     string idanggota;
     string nama;
     string alamat;
+    string kodeAnggota1;
     int tanggal;
     int bulan;
     int tahun;
     string email;
     int status;
+    string strStatus;
 };
 
 struct buku{
@@ -245,7 +249,6 @@ fileOutput.close();
 cout << "Data Siswa berhasil ditambahkan!";
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -254,7 +257,7 @@ cout << "Data Siswa berhasil ditambahkan!";
         } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
     }
     system("cls");
-    return;;
+    return;
 }
 
 void TambahBuku(){
@@ -319,7 +322,6 @@ a.idbuku = "BK" + idBuku;
     cout << "Data Buku berhasil ditambahkan!" << endl;
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -374,7 +376,6 @@ void TambahAdmin(){
     cout << "Data Admin berhasil ditambahkan!" << endl;
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -431,7 +432,6 @@ void CariAnggota() {
     fileOutput.close();
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -486,7 +486,6 @@ void CariBuku(){
     file.close();
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -992,8 +991,7 @@ void cariPeminjaman(){
     }
     file.close();
 
-   string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    string nol;
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -1083,25 +1081,6 @@ int hitungDenda(string batas, int hari2, int bulan2, int tahun2){
     return 0;
 }
 
-bool sudahDikembalikan(string idAnggota, string idBuku) {
-    ifstream file("pengembalian.txt");
-    string line;
-
-    while (getline(file, line)) {
-        int p1 = line.find(';');
-        int p2 = line.find(';', p1 + 1);
-
-        string idBukuLog = line.substr(0, p1);
-        string idAnggotaLog = line.substr(p1 + 1, p2 - p1 - 1);
-
-        if (idAnggotaLog == idAnggota && idBukuLog == idBuku) {
-            return true; 
-        }
-    }
-    file.close();
-    return false;
-}
-
 void pengembalian(){
     string idanggota;
     int tahun,bulan,tanggal;
@@ -1152,30 +1131,10 @@ void pengembalian(){
        int kolom1 = barisCek.find(';');
        int kolom2 = barisCek.find(';',kolom1+1);
        int kolom3 = barisCek.find(';',kolom2+1);
-       int kolom4 = barisCek.find(';',kolom3+1);
-       int kolom5 = barisCek.find(';',kolom4+1);
 
-       string idPinjam = barisCek.substr(0,kolom1);
-       string cekBuku = barisCek.substr(kolom1+1,kolom2-kolom1-1);
        string cekAnggota = barisCek.substr(kolom2+1,kolom3-kolom2-1);
-       string tanggalPinjam = barisCek.substr(kolom3+1,kolom4-kolom3-1);
-       string tanggalKembali = barisCek.substr(kolom4+1,kolom5-kolom4-1);
-       string status = barisCek.substr(kolom5+1);
 
        if(idanggota == cekAnggota){
-        string f = cariNama(cekAnggota);
-        string g = NamaBuku(cekBuku);
-        if (sudahDikembalikan(idanggota, cekBuku)) {
-        cout << "Buku ini sudah pernah dikembalikan sebelumnya!" << endl;
-        cek.close();
-        return;
-        }
-        cout << "Nama : " << f << endl
-             << "ID Anggota : " << cekAnggota << endl
-             << "Buku yang sedang dipinjam : " << g << endl
-             << "ID Buku : " << cekBuku << endl
-             << "Tanggal Meminjam : " << tanggalPinjam << endl
-             << "Batas Pengembalian : " << tanggalKembali << endl << endl;
         meminjam = true;
         break;
        }
@@ -1290,11 +1249,9 @@ void pengembalian(){
         string Judul = NamaBuku(idBuku);
         string Nickname = cariNama(idAnggota);
         
-        cout << endl << "Buku : " << Judul << endl
+        cout << "Buku : " << Judul << endl
              << "ID Buku : " << idBuku << endl
              << "Dipinjam oleh : " << Nickname << " ( " << idAnggota << " ) " << endl 
-             << "Tanggal Meminjam : " << tanggalPinjam << endl
-             << "Tanggal Kembali : " << tanggalKembali << endl
              << "Terlambat : " << keterlambatan << endl
              << "Denda : " << denda << endl << endl;
         
@@ -1391,81 +1348,6 @@ void NonaktifAdmin(){
     return;
 }
 
-void AktifkanAdmin(){
-    string menu;
-    cout << "Masukkan ID Admin yang ingin diaktifkan : ";
-    getline(cin, menu);
-
-    ifstream adminFile("petugas.txt");
-    ofstream tempoFile("temporaryAdmin.txt");
-
-    string baris;
-    bool ketemu = false;
-    string UpdateStatus = "AKTIF";   
-
-    while (getline(adminFile, baris)) {
-        int pos1 = baris.find(';');
-        int pos2 = baris.find(';', pos1 + 1);
-        int pos3 = baris.find(';', pos2 + 1);
-        int pos4 = baris.find(';', pos3 + 1);
-        int pos5 = baris.find(';', pos4 + 1);
-
-        string id = baris.substr(0, pos1);
-        string username = baris.substr(pos1 + 1, pos2 - pos1 - 1);
-        string ADMIN = baris.substr(pos2 + 1, pos3 - pos2 - 1);
-        string password = baris.substr(pos3 + 1, pos4 - pos3 - 1);
-        string nama = baris.substr(pos4 + 1, pos5 - pos4 - 1);
-        string status = baris.substr(pos5 + 1);
-
-        if (id == menu) {
-            ketemu = true;
-
-            if (ADMIN == "1") {
-                cout << "ID adalah milik Admin Utama, tidak dapat diubah!" << endl;
-                tempoFile << baris << endl;
-            }
-            else if (status == "AKTIF") {
-                cout << "Admin ini sudah aktif sebelumnya." << endl;
-                tempoFile << baris << endl;
-            }
-            else {
-                // aktifkan
-                tempoFile << id << ";" << username << ";" << ADMIN << ";" 
-                          << password << ";" << nama << ";" << UpdateStatus << endl;
-
-                cout << "Admin berhasil diaktifkan!" << endl;
-            }
-        }
-        else {
-            tempoFile << baris << endl;
-        }
-    }
-
-    adminFile.close();
-    tempoFile.close();
-
-    remove("petugas.txt");
-    rename("temporaryAdmin.txt", "petugas.txt");
-
-    if (!ketemu) {
-        cout << "ID Admin tidak ditemukan!" << endl;
-    }
-
-    string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    while (true) {
-        cout << "Menu Kembali (ketik 0) : ";
-        getline(cin, nol);
-        if (nol == "0") {
-            break;
-        } else {
-            cout << "Anda harus ketik 0 jika ingin kembali" << endl;
-        }
-    }
-    system("cls");
-}
-
-
 void NonaktifAnggota(){
     string in;
     cout << "Masukkan ID Anggota yang ingin di input : ";
@@ -1533,79 +1415,6 @@ void NonaktifAnggota(){
     return;
 }
 
-void AktifkanAnggota(){
-    string in;
-    cout << "Masukkan ID Anggota yang ingin diaktifkan : ";
-    getline(cin, in);
-
-    ifstream file("anggota.txt");
-    ofstream tempo("temporaryAnggota.txt");
-
-    string baris;
-    bool ketemu = false;
-    string UpdateStatus = "1";   
-
-    while (getline(file, baris)) {
-        int pos1 = baris.find(';');
-        int pos2 = baris.find(';', pos1 + 1);
-        int pos3 = baris.find(';', pos2 + 1);
-        int pos4 = baris.find(';', pos3 + 1);
-        int pos5 = baris.find(';', pos4 + 1);
-        int pos6 = baris.find(';', pos5 + 1);
-
-        string id = baris.substr(0, pos1);
-        string kode = baris.substr(pos1 + 1, pos2 - pos1 - 1);
-        string nama = baris.substr(pos2 + 1, pos3 - pos2 - 1);
-        string tanggal = baris.substr(pos3 + 1, pos4 - pos3 - 1);
-        string alamat = baris.substr(pos4 + 1, pos5 - pos4 - 1);
-        string gmail = baris.substr(pos5 + 1, pos6 - pos5 - 1);
-        string status = baris.substr(pos6 + 1);
-
-        if (id == in) {
-            ketemu = true;
-
-            if (status == "0") {
-                // aktifkan
-                tempo << id << ";" << kode << ";" << nama << ";" << tanggal << ";" << alamat 
-                     << ";" << gmail << ";" << UpdateStatus << endl;
-
-                cout << "Anggota berhasil diaktifkan." << endl;
-            } 
-            else {
-                cout << "Anggota sudah aktif." << endl;
-                tempo << baris << endl;  
-            }
-        }
-        else {
-            tempo << baris << endl;
-        }
-    }
-
-    file.close();
-    tempo.close();
-
-    remove("anggota.txt");
-    rename("temporaryAnggota.txt", "anggota.txt");
-
-    if (!ketemu) {
-        cout << "ID Anggota tidak ditemukan!" << endl;
-    }
-
-    string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    while (true) {
-        cout << "Menu Kembali (ketik 0) : ";
-        getline(cin, nol);
-        if (nol == "0") {
-            break;
-        } else { 
-            cout << "Anda harus ketik 0 jika ingin kembali." << endl; 
-        }
-    }
-    system("cls");
-}
-
-
 void HapusBuku(){
     string id;
     cout << "Masukkan ID Buku yang ingin dihapus : ";
@@ -1653,6 +1462,208 @@ void HapusBuku(){
     }
 }
 
+void TampilPinjam(){
+    cout << "Daftar yang belum mengembalikan" << endl << endl;
+    
+    ifstream output("peminjaman.txt");
+    string baris;
+    int nomor = 1;
+
+    while(getline(output,baris)){
+        int pos1 = baris.find(';');
+        int pos2 = baris.find(';',pos1+1);
+        int pos3 = baris.find(';',pos2+1);
+        int pos4 = baris.find(';',pos3+1);
+        int pos5 = baris.find(';',pos4+1);
+
+        string idPinjam = baris.substr(0,pos1);
+        string idBuku = baris.substr(pos1+1,pos2-pos1-1);
+        string idAnggota = baris.substr(pos2+1,pos3-pos2-1);
+        string tanggalPinjam = baris.substr(pos3+1,pos4-pos3-1);
+        string tanggalKembali = baris.substr(pos4+1,pos5-pos4-1);
+        string status = baris.substr(pos5+1);
+
+        string namaBuku = NamaBuku(idBuku);
+        string namaAnggota = cariNama(idAnggota);
+
+        if(status=="1"){
+            cout << nomor++ << ". "
+                 << "ID Pinjam: " << idPinjam << endl
+                 << "   Buku       : " << namaBuku << " (ID: " << idBuku << ")" << endl
+                 << "   Anggota    : " << namaAnggota << " (ID: " << idAnggota << ")" << endl
+                 << "   Tgl Pinjam : " << tanggalPinjam << endl
+                 << "   Tgl Kembali: " << tanggalKembali << endl
+                 << "   Status     : Belum kembali" << endl << endl;
+        }
+    }
+    output.close();
+
+    string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while(true){
+       cout << "Kembali ke menu tampilan (ketik 0) : ";
+       getline(cin,nol);
+       if(nol == "0"){
+        break;
+        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+    }
+    system("cls");
+    return;
+}
+
+void TampilBuku(){
+    vector <buku> kolom;
+    buku v;
+    int nomor = 1;
+    cout << "Daftar Buku" << endl;
+
+    ifstream file("buku.txt");
+    string line;
+
+    while(getline(file,line)){
+        int pos1 = line.find(';');
+        int pos2 = line.find(';',pos1+1);
+        int pos3 = line.find(';',pos2+1);
+        int pos4 = line.find(';',pos3+1);
+        int pos5 = line.find(';',pos4+1);
+        int pos6 = line.find(';',pos5+1);
+
+        v.idbuku = line.substr(0,pos1);
+        v.isbn = line.substr(pos1+1,pos2-pos1-1);
+        v.judul = line.substr(pos2+1,pos3-pos2-1);
+        v.pengarang = line.substr(pos3+1,pos4-pos3-1);
+        v.penerbit = line.substr(pos4+1,pos5-pos4-1);
+        v.tahunTerbit = stoi(line.substr(pos5+1,pos6-pos5-1));
+        v.stok = stoi(line.substr(pos6+1));
+
+        kolom.push_back(v);
+    }
+    file.close();
+
+    sort(kolom.begin(), kolom.end(), 
+    [](const buku &x,const buku &y) {
+         return x.judul < y.judul;
+    });
+
+    for(int i = 0;i < kolom.size();i++){
+        buku w = kolom[i];
+        cout << nomor++ << ". " 
+             << "Nama : " << w.judul << " ( Id Buku : " << w.idbuku << " , ISBN : " << w.isbn << ")" << endl << "- Dikarang oleh " << w.pengarang
+             << " dan diterbitkan oleh " << w.penerbit << " pada tahun " << w.tahunTerbit << "." << endl 
+             << "Stok sekarang : " << w.stok << endl << endl;
+    }
+
+    string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while(true){
+       cout << "Kembali ke menu tampilan (ketik 0) : ";
+       getline(cin,nol);
+       if(nol == "0"){
+        break;
+        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+    }
+    system("cls");
+    return;
+}
+
+void TampilAnggota(){
+    vector <anggota> daftar;
+    anggota h;
+    int nomor = 1;
+    cout << "Daftar Anggota" << endl;
+
+    ifstream file("anggota.txt");
+    string line;
+
+    while(getline(file,line)){
+        int pos1 = line.find(';');
+        int pos2 = line.find(';',pos1+1);
+        int pos3 = line.find(';',pos2+1);
+        int pos4 = line.find(';',pos3+1);
+        int pos5 = line.find(';',pos4+1);
+        int pos6 = line.find(';',pos5+1);
+
+        h.idanggota = line.substr(0,pos1);
+        h.kodeAnggota1 = line.substr(pos1+1,pos2-pos1-1);
+        h.nama = line.substr(pos2+1,pos3-pos2-1);
+
+        string tgl = line.substr(pos3+1,pos4-pos3-1);
+        int garis = tgl.find('-');
+        int garis2 = tgl.find('-',garis+1);
+        h.tanggal = stoi(tgl.substr(0,garis));
+        h.bulan = stoi(tgl.substr(garis+1,garis2-garis-1));
+        h.tahun = stoi(tgl.substr(garis2+1));
+
+        h.alamat = line.substr(pos4+1,pos5-pos4-1);
+        h.email = line.substr(pos5+1,pos6-pos5-1);
+        string kataStatus = line.substr(pos6+1);
+
+        if(kataStatus == "1"){
+            h.strStatus = "Aktif";
+        } else { h.strStatus = "Tidak Aktif"; }
+
+        daftar.push_back(h);
+    }
+    file.close();
+
+    sort(daftar.begin(), daftar.end(), 
+    [](const anggota &w,const anggota &y) {
+         return w.nama < y.nama;
+    });
+
+    for(int i = 0;i < daftar.size();i++){
+        anggota p = daftar[i];
+        cout << nomor++ << ". " 
+             << "Nama : " << p.nama << " ( ID : " << p.idanggota << ", Kode : " << p.kodeAnggota1 << ")" << endl
+             << "Tanggal Lahir : " << p.tanggal << "-" << p.bulan << "-" << p.tahun << endl
+             << "Alamat : " << p.alamat << endl
+             << "Email : " << p.email << endl
+             << "Status : " << p.strStatus << endl << endl;
+    }
+
+    string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while(true){
+       cout << "Kembali ke menu tampilan (ketik 0) : ";
+       getline(cin,nol);
+       if(nol == "0"){
+        break;
+        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+    }
+    system("cls");
+    return;
+}
+
+void MenuTampilan(){
+    int nomor;
+    do{ 
+    cout << "1. Tampilkan Buku" << endl;
+    cout << "2. Tampilkan Anggota" << endl;
+    cout << "3. Tampilkan Anggota yang belum mengembalikan" << endl;
+    cout << "0. Kembali ke Menu Utama" << endl;
+    cout << "Masukkan sesuai Menu : ";
+    cin >> nomor;
+
+    if(nomor==0){
+        system("cls");
+        return;
+    }
+    else if(nomor==1){
+        system("cls");
+        TampilBuku();
+    }
+    else if(nomor==2){
+        system("cls");
+        TampilAnggota();
+    }
+    else if(nomor==3){
+        system("cls");
+        TampilPinjam();
+    }
+    } while(true);
+
+}
+
 void InterfaceAdminUtama(){
     int pilih;
     do{
@@ -1667,9 +1678,8 @@ void InterfaceAdminUtama(){
     cout << "8. Pengembalian" << endl;
     cout << "9. Non-Aktif Admin" << endl;
     cout << "10. Non-Aktif Anggota" << endl;
-    cout << "11. Aktifkan Admin" << endl;
-    cout << "12. Aktifkan Anggota" << endl;
-    cout << "13. Hapus Buku" << endl;
+    cout << "11. Hapus Buku" << endl;
+    cout << "12. Tampilkan Buku, Anggota dan Peminjam" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Menu : ";
@@ -1723,15 +1733,11 @@ void InterfaceAdminUtama(){
     }
     else if(pilih==11){
         system("cls");
-        AktifkanAdmin();
+        HapusBuku();
     }
     else if(pilih==12){
         system("cls");
-        AktifkanAnggota();
-    }
-    else if(pilih==13){
-        system("cls");
-        HapusBuku();
+        MenuTampilan();
     }
 } while(true);
 }
@@ -1749,8 +1755,8 @@ void AdminBiasa(){
     cout << "6. Cari Peminjaman" << endl;
     cout << "7. Pengembalian" << endl;
     cout << "8. Non-Aktif Anggota" << endl;
-    cout << "9. Aktifkan Anggota" << endl;
-    cout << "10. Hapus Buku" << endl;
+    cout << "9. Hapus Buku" << endl;
+    cout << "10. Tampilkan Buku, Anggota atau Peminjam" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Pilihan : ";
@@ -1795,11 +1801,11 @@ void AdminBiasa(){
     }
     else if(pilih==9){
         system("cls");
-        AktifkanAnggota();
+        HapusBuku();
     }
     else if(pilih==10){
         system("cls");
-        HapusBuku();
+        MenuTampilan();
     }
 } while(true);
 }
@@ -1809,6 +1815,8 @@ void InterfaceAnggota(){
     do {
     cout << endl << "Daftar Menu" << endl;
     cout << "1. Cari Buku" << endl;
+    cout << "2. Request Peminjaman" << endl;
+    cout << "3. Lihat Peminjaman" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Menu : ";
