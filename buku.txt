@@ -1,5 +1,6 @@
-BK0003;2000000000000;Rafi The Destroyer;Rafi;Rafi Alfan;26;596
-BK0004;2000000000000;THIS IS SPARTA;SPARTA;SPARTA KINGDOM;29;233
-BK0005;2000000000000;Adin;Adin;ADINPT;2025;5997
-BK0005;9789792281415;Gadis Kretek;Ratih Kumala;Gramedia Pustaka Utama;2023;0
-BK0006;1234567890123;Petualangan Maulana di Ngawi;Ilham;PT Peci Hitam;2014;599
+BK0001;9789792281415;Gadis Kretek;Ratih Kumala;Gramedia Pustaka Utama;2015;5
+BK0002;9786020421773;One Punch Man;One;PR Elexmedia Komputindo;2013;57
+BK0003;9786020434032;One Piece;Oda;PT Elexmedia Komputindo;2010;304
+BK0004;9786238882205;Teruslah Bodoh Jangan Pintar;Tere Liye;Sabakgrip;2014;24
+BK0005;9786020401270;Detektif Conan;Aoyama Gosho;PT Elexmedia Komputindo;1995;30
+BK0006;9786022555513;The Mastermind;Komikus Rif'an;ping_fiction;2015;78
