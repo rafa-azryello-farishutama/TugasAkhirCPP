@@ -4,3 +4,4 @@ BK0003;9786020434032;One Piece;Oda;PT Elexmedia Komputindo;2010;304
 BK0004;9786238882205;Teruslah Bodoh Jangan Pintar;Tere Liye;Sabakgrip;2014;24
 BK0005;9786020401270;Detektif Conan;Aoyama Gosho;PT Elexmedia Komputindo;1995;30
 BK0006;9786022555513;The Mastermind;Komikus Rif'an;ping_fiction;2015;78
+BK0007;2849287382123;Petualangan Hiu;Aku;PT AKU;2023;700

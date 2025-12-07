@@ -1137,46 +1137,51 @@ void pengembalian(){
         continue;
      }
 
-    ifstream cek("Peminjaman.txt");
-    string barisCek;
-    bool meminjam = false;
-    string namaAnggota, namaBuku;
-    while(getline(cek,barisCek)){
-       int kolom1 = barisCek.find(';');
-       int kolom2 = barisCek.find(';',kolom1+1);
-       int kolom3 = barisCek.find(';',kolom2+1);
-       int kolom4 = barisCek.find(';',kolom3+1);
-       int kolom5 = barisCek.find(';',kolom4+1);
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while(true) { 
+        
+        
+        ifstream cekSisa("Peminjaman.txt");
+        string barisSisa;
+        bool AdaPinjaman = false;
 
-       string idPinjam = barisCek.substr(0,kolom1);
-       string idbook = barisCek.substr(kolom1+1,kolom2-kolom1-1);
-       string idang = barisCek.substr(kolom2+1,kolom3-kolom2-1);
-       string TanggalPinjam = barisCek.substr(kolom3+1,kolom4-kolom3-1);
-       string TanggalKembali = barisCek.substr(kolom4+1,kolom5-kolom4-1);
-       string status = barisCek.substr(kolom5+1);
-       
-       namaAnggota = cariNama(idang);
-       namaBuku = NamaBuku(idbook);
-       if(idanggota == idang){
-        if(status == "1"){
-        meminjam = true;
+        while(getline(cekSisa, barisSisa)){
+            int sisa1 = barisSisa.find(';');
+            int sisa2 = barisSisa.find(';',sisa1+1);
+            int sisa3 = barisSisa.find(';',sisa2+1);
+            int sisa4 = barisSisa.find(';',sisa3+1);
+            int sisa5 = barisSisa.find(';',sisa4+1);
 
-        cout << "Nama : " << namaAnggota
-             << " ( " << idang << " ) " << endl
-             << "Buku yang sedang dipinjam : " << namaBuku << " ( " << idbook << " ) "
-             << endl << "ID Peminjaman : " << idPinjam << endl
-             << "Tanggal Pinjam : " << TanggalPinjam << endl
-             << "Tanggal Kembali : " << TanggalKembali << endl << endl;
+            string idPinjam = barisSisa.substr(0,sisa1);
+            string idbook = barisSisa.substr(sisa1+1,sisa2-sisa1-1);
+            string idAnggotaSisa = barisSisa.substr(sisa2+1,sisa3-sisa2-1);
+            string TanggalPinjam = barisSisa.substr(sisa3+1,sisa4-sisa3-1);
+            string TanggalKembali = barisSisa.substr(sisa4+1,sisa5-sisa4-1);
+            string statusSisa = barisSisa.substr(sisa5+1);
+            
+            
+            if(idanggota == idAnggotaSisa && statusSisa == "1"){
+                AdaPinjaman = true;
+                
+                
+                string namaAnggota = cariNama(idAnggotaSisa); 
+                string namaBuku = NamaBuku(idbook); 
+                cout << "Nama : " << namaAnggota
+                     << " ( " << idAnggotaSisa << " ) " << endl
+                     << "Buku yang sedang dipinjam : " << namaBuku << " ( " << idbook << " ) "
+                     << endl << "ID Peminjaman : " << idPinjam << endl
+                     << "Tanggal Pinjam : " << TanggalPinjam << endl
+                     << "Tanggal Kembali : " << TanggalKembali << endl << endl;
+            }
         }
-       } 
-    }
-    cek.close();
-    if(!meminjam){
-        cout << "Siswa tidak meminjam apapun!" << endl;
-        continue;
-    }
-    break;
-}
+        cekSisa.close();
+
+        if (!AdaPinjaman) {
+            cout << endl << "Anggota " << idanggota << " sudah tidak memiliki pinjaman aktif lagi." << endl;
+            break; 
+        }
+    
+
     while(true) { cout << endl << "Id Buku mana yang ingin anda dikembalikan : ";
     cin.ignore();
     getline(cin,idkonfirmasi);
@@ -1187,7 +1192,7 @@ void pengembalian(){
     string finalpinjam = "";
     string kembali = "";
     string pinjamstr = "";
-    bool ditemukan = true;
+    bool ditemukan = false;
 
     while(getline(file1,baris)){
 
@@ -1224,7 +1229,9 @@ void pengembalian(){
     if(!ditemukan){
         cout << "ID Buku tidak ditemukan atau tidak sedang dipinjam oleh anggota ini." << endl;
         continue;
-    }
+    } break;
+}
+    
 
     bool TanggalBenar = false;
     while(!TanggalBenar) {
@@ -1329,32 +1336,6 @@ void pengembalian(){
         
         UbahStatus(finalpinjam);
         UpdateStokTambah(idkonfirmasi);
-        
-        bool AdaPinjaman = false;
-        ifstream cekSisa("Peminjaman.txt");
-        string barisSisa;
-
-        while(getline(cekSisa,barisSisa)){
-            int sisa1 = barisSisa.find(';');
-            int sisa2 = barisSisa.find(';',sisa1+1);
-            int sisa3 = barisSisa.find(';',sisa2+1);
-            int sisa4 = barisSisa.find(';',sisa3+1);
-            int sisa5 = barisSisa.find(';',sisa4+1);
-
-            string idAnggotaSisa = barisSisa.substr(sisa2+1,sisa3-sisa2-1);
-            string statusSisa = barisSisa.substr(sisa5+1);
-
-            if(idanggota == idAnggotaSisa && statusSisa == "1"){
-                AdaPinjaman = true;
-                break;
-            }
-        }
-        cekSisa.close();
-
-        if (!AdaPinjaman) {
-            cout << endl << "Anggota " << idanggota << " sudah tidak memiliki pinjaman aktif lagi." << endl;
-            break; 
-        }
 
         char pilihan;
     do {
@@ -1368,10 +1349,9 @@ void pengembalian(){
         break; 
     }
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
+
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -1381,7 +1361,10 @@ void pengembalian(){
     }
     system("cls");
     return;
+
 }
+    
+    
 
 void NonaktifAdmin(){
     string menu;
