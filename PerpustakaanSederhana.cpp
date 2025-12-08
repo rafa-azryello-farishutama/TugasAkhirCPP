@@ -394,8 +394,10 @@ void TambahAdmin(){
 
 
 void CariAnggota() {
+    while(true) { 
     string katakunci;
-    cout << "Masukkan Anggota Kode : ";
+    bool ketemu = false;
+    cout << "Masukkan ID Anggota : ";
     getline(cin,katakunci);
 
     ifstream fileOutput("anggota.txt");
@@ -414,6 +416,7 @@ void CariAnggota() {
 
             string id = line.substr(0,posisi1);
             if(id==katakunci){
+            ketemu = true;
             string kode = line.substr(posisi1 + 1, posisi2-posisi1-1);
             string nama = line.substr(posisi2 + 1, posisi3-posisi2-1);
             string tanggal = line.substr(posisi3 + 1, posisi4-posisi3-1);
@@ -434,11 +437,34 @@ void CariAnggota() {
             }
         
     }
-    cout << "Data tidak ditemukan!";
-    fileOutput.close();
+    if(!ketemu){
+    cout << "Data tidak ditemukan!" << endl;
+    cout << "Apakah anda ingin mencari Anggota yang lain? (1 = ya, 0=tidak) : ";
+    string opsi;
+    getline(cin,opsi);
+    if(opsi=="1"){
+        system("cls");
+        continue;
+    } else if(opsi=="0"){
+        break;
+    } else { 
+        cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+    }
+    }
+    
+    cout << endl << "Cari anggota lain? (1 = ya, 0 = tidak): ";
+        string pilihan;
+        getline(cin, pilihan);
+
+        if(pilihan == "1"){
+            system("cls");
+            continue;
+        } else if(pilihan=="0"){
+            break;
+        } 
+}
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Kembali ke menu tampilan (ketik 0) : ";
        getline(cin,nol);
@@ -451,7 +477,9 @@ void CariAnggota() {
 }
 
 void CariBuku(){
+    while(true) { 
     string katakunci;
+    bool ketemu = false;
     cout << "Masukkan Judul Buku : ";
     getline(cin,katakunci);
 
@@ -470,9 +498,10 @@ void CariBuku(){
             int posisi6 = line.find(';',posisi5 + 1);
 
             string id = line.substr(0,posisi1);
-            if(id == katakunci){
             string isbn = line.substr(posisi1+1, posisi2-posisi1-1);
             string nama = line.substr(posisi2+1,posisi3-posisi2-1);
+            if(nama == katakunci){
+            ketemu = true;
             string pengarang = line.substr(posisi3+1,posisi4-posisi3-1);
             string penerbit = line.substr(posisi4+1,posisi5-posisi4-1);
             string tahunTerbit = line.substr(posisi5+1,posisi6-posisi5-1);
@@ -490,11 +519,34 @@ void CariBuku(){
             }
         
     }
-    cout << "Data tidak ditemukan!";
-    file.close();
+    if(!ketemu){
+    cout << "Data tidak ditemukan!" << endl;
+    cout << "Apakah anda ingin mencari buku yang lain? (1 = ya, 0=tidak) : ";
+    string opsi;
+    getline(cin,opsi);
+    if(opsi=="1"){
+        system("cls");
+        continue;
+    } else if(opsi=="0"){
+        break;
+    } else { 
+        cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+    }
+    }
+    
+    cout << endl << "Cari buku lain? (1 = ya, 0 = tidak): ";
+        string pilihan;
+        getline(cin, pilihan);
+
+        if(pilihan == "1"){
+            system("cls");
+            continue;
+        } else if(pilihan=="0"){
+            break;
+        } 
+}
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Kembali ke menu tampilan (ketik 0) : ";
        getline(cin,nol);
@@ -1093,230 +1145,238 @@ int hitungDenda(string batas, int hari2, int bulan2, int tahun2){
     return 0;
 }
 
-void pengembalian(){
-    string idanggota,idkonfirmasi;
-    int tahun,bulan,tanggal;
-    int hariP = 0, bulanP = 0, tahunP = 0;
-    while(true){
-    cout << "Masukkan ID Anggota : ";
-    cin >> idanggota;
+bool masihAdaPinjaman(string idanggota) {
+    ifstream file("Peminjaman.txt");
+    string baris;
 
-    ifstream file("anggota.txt");
-    string line;
-    bool ketemu = false;
-    bool aktif = false;
-    while(getline(file,line)){
-        int pos1 = line.find(';');
-        string id = line.substr(0,pos1);
+    while (getline(file, baris)) {
+        int p1 = baris.find(';');
+        int p2 = baris.find(';', p1 + 1);
+        int p3 = baris.find(';', p2 + 1);
+        int p4 = baris.find(';', p3 + 1);
+        int p5 = baris.find(';', p4 + 1);
 
-        if(idanggota == id){
-            ketemu = true;
-            int pos2 = line.find(';',pos1+1);
-            int pos3 = line.find(';',pos2+1);
-            int pos4 = line.find(';',pos3+1);
-            int pos5 = line.find(';',pos4+1);
-            int pos6 = line.find(';',pos5+1);
+        string idAnggota = baris.substr(p2 + 1, p3 - p2 - 1);
+        string status = baris.substr(p5 + 1);
 
-            string status = line.substr(pos6+1);
-            if(status == "1"){
-                aktif = true;
-                file.close();
-            } else{
-                cout << "Akun Siswa tidak aktif!" << endl;
-            }
-            break;
+        if (idAnggota == idanggota && status == "1") {
+            file.close();   
+            return true;
         }
     }
-     file.close();
-     if(!ketemu){
-        cout << "ID Anggota tidak ditemukan!" << endl;
-        continue;
-     }
 
-     if(!aktif){
-        continue;
-     }
+    file.close();          
+    return false;
+}
+
+
+void pengembalian() {
+    string idanggota, idkonfirmasi;
+    int tahun, bulan, tanggal;
+    int hariP = 0, bulanP = 0, tahunP = 0;
+    while (true) {
+        cout << "Masukkan ID Anggota : ";
+        cin >> idanggota;
+
+        ifstream file("anggota.txt");
+        string line;
+        bool ketemu = false;
+        bool aktif = false;
+
+        while (getline(file, line)) {
+            int pos1 = line.find(';');
+            string id = line.substr(0, pos1);
+
+            if (idanggota == id) {
+                ketemu = true;
+                int pos2 = line.find(';', pos1 + 1);
+                int pos3 = line.find(';', pos2 + 1);
+                int pos4 = line.find(';', pos3 + 1);
+                int pos5 = line.find(';', pos4 + 1);
+                int pos6 = line.find(';', pos5 + 1);
+
+                string status = line.substr(pos6 + 1);
+                if (status == "1") {
+                    aktif = true;
+                } else {
+                    cout << "Akun Siswa tidak aktif!" << endl;
+                }
+                break;
+            }
+        }
+
+        file.close();
+
+        if (!ketemu) {
+            cout << "ID Anggota tidak ditemukan!" << endl;
+            continue;
+        }
+
+        if (!aktif) {
+            continue;
+        }
+
+        break;
+    }
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    while(true) { 
-        
-        
+
+    while (true) {
         ifstream cekSisa("Peminjaman.txt");
         string barisSisa;
         bool AdaPinjaman = false;
 
-        while(getline(cekSisa, barisSisa)){
-            int sisa1 = barisSisa.find(';');
-            int sisa2 = barisSisa.find(';',sisa1+1);
-            int sisa3 = barisSisa.find(';',sisa2+1);
-            int sisa4 = barisSisa.find(';',sisa3+1);
-            int sisa5 = barisSisa.find(';',sisa4+1);
+        while (getline(cekSisa, barisSisa)) {
+            int s1 = barisSisa.find(';');
+            int s2 = barisSisa.find(';', s1 + 1);
+            int s3 = barisSisa.find(';', s2 + 1);
+            int s4 = barisSisa.find(';', s3 + 1);
+            int s5 = barisSisa.find(';', s4 + 1);
 
-            string idPinjam = barisSisa.substr(0,sisa1);
-            string idbook = barisSisa.substr(sisa1+1,sisa2-sisa1-1);
-            string idAnggotaSisa = barisSisa.substr(sisa2+1,sisa3-sisa2-1);
-            string TanggalPinjam = barisSisa.substr(sisa3+1,sisa4-sisa3-1);
-            string TanggalKembali = barisSisa.substr(sisa4+1,sisa5-sisa4-1);
-            string statusSisa = barisSisa.substr(sisa5+1);
-            
-            
-            if(idanggota == idAnggotaSisa && statusSisa == "1"){
+            string idPinjam = barisSisa.substr(0, s1);
+            string idbook = barisSisa.substr(s1 + 1, s2 - s1 - 1);
+            string idAnggotaSisa = barisSisa.substr(s2 + 1, s3 - s2 - 1);
+            string TanggalPinjam = barisSisa.substr(s3 + 1, s4 - s3 - 1);
+            string TanggalKembali = barisSisa.substr(s4 + 1, s5 - s4 - 1);
+            string statusSisa = barisSisa.substr(s5 + 1);
+
+            if (idanggota == idAnggotaSisa && statusSisa == "1") {
                 AdaPinjaman = true;
-                
-                
-                string namaAnggota = cariNama(idAnggotaSisa); 
-                string namaBuku = NamaBuku(idbook); 
-                cout << "Nama : " << namaAnggota
-                     << " ( " << idAnggotaSisa << " ) " << endl
-                     << "Buku yang sedang dipinjam : " << namaBuku << " ( " << idbook << " ) "
-                     << endl << "ID Peminjaman : " << idPinjam << endl
-                     << "Tanggal Pinjam : " << TanggalPinjam << endl
-                     << "Tanggal Kembali : " << TanggalKembali << endl << endl;
+
+                string namaAnggota = cariNama(idAnggotaSisa);
+                string namaBuku = NamaBuku(idbook);
+
+                cout << "Nama : " << namaAnggota << " ( " << idAnggotaSisa << " )\n"
+                     << "Buku yang sedang dipinjam : " << namaBuku << " ( " << idbook << " )\n"
+                     << "ID Peminjaman : " << idPinjam << "\n"
+                     << "Tanggal Pinjam : " << TanggalPinjam << "\n"
+                     << "Tanggal Kembali : " << TanggalKembali << "\n\n";
             }
         }
+
         cekSisa.close();
 
         if (!AdaPinjaman) {
-            cout << endl << "Anggota " << idanggota << " sudah tidak memiliki pinjaman aktif lagi." << endl;
-            break; 
-        }
-    
-
-    while(true) { cout << endl << "Id Buku mana yang ingin anda dikembalikan : ";
-    cin.ignore();
-    getline(cin,idkonfirmasi);
-
-    string baris;
-    ifstream file1("Peminjaman.txt");
-    string finalStatus = "";
-    string finalpinjam = "";
-    string kembali = "";
-    string pinjamstr = "";
-    bool ditemukan = false;
-
-    while(getline(file1,baris)){
-
-        int posisi1 = baris.find(';');
-        int posisi2 = baris.find(';',posisi1+1);
-        int posisi3 = baris.find(';',posisi2+1);
-        int posisi4 = baris.find(';',posisi3+1);
-        int posisi5 = baris.find(';',posisi4+1);
-
-        string idpinjam = baris.substr(0,posisi1);
-        string idBuku = baris.substr(posisi1+1,posisi2-posisi1-1);
-        string idAnggota = baris.substr(posisi2+1,posisi3-posisi2-1);
-        string tanggalPinjam = baris.substr(posisi3+1,posisi4-posisi3-1);
-        string tanggalKembali = baris.substr(posisi4+1,posisi5-posisi4-1);
-        string status = baris.substr(posisi5+1);
-
-        if(idBuku == idkonfirmasi && status == "1" && idanggota == idAnggota){
-            ditemukan = true;
-            pinjamstr = tanggalPinjam;
-            finalpinjam = idpinjam;
-            kembali = tanggalKembali;
-
-            int kolom1 = pinjamstr.find('-');
-            int kolom2 = pinjamstr.find('-',kolom1+1);
-
-            hariP = stoi(pinjamstr.substr(0,kolom1));
-            bulanP = stoi(pinjamstr.substr(kolom1+1,kolom2-kolom1-1));
-            tahunP = stoi(pinjamstr.substr(kolom2+1));
+            cout << endl << "Anggota " << idanggota << " sudah tidak memiliki pinjaman aktif lagi.\n";
             break;
         }
-    }
-    file1.close();
 
-    if(!ditemukan){
-        cout << "ID Buku tidak ditemukan atau tidak sedang dipinjam oleh anggota ini." << endl;
-        continue;
-    } break;
-}
-    
-
-    bool TanggalBenar = false;
-    while(!TanggalBenar) {
-        cout << "Masukkan Tanggal Siswa Mengembalikan buku (DD-MM-YY)" << endl;
-    while(true) {
-    cout << "Masukkan Tahun : ";
-    cin >> tahun;
-
-    if(tahun > 2025){
-        cout << "Tolong input Tahun yang benar!" << endl;
-    } else if(tahun==0){
-        cout << "Tahun tidak boleh kosong" << endl;
-    } else { break; }
+        break;
     }
 
-    while(true) {
-        cout << "Masukkan Bulan : ";
-        cin >> bulan;
+    while (true) {
+        cout << endl << "Id Buku mana yang ingin anda dikembalikan : ";
+        getline(cin, idkonfirmasi);
 
-        if(bulan > 12){
-            cout << "Tolong masukkan Bulan yang benar!" << endl;
-        } else if(bulan==0){
-            cout << "Bulan tidak boleh kosong!" << endl;
-        } else { break; }
-    }
+        ifstream file1("Peminjaman.txt");
+        string baris;
+        bool ditemukan = false;
+        string finalpinjam, kembali, pinjamstr;
 
-    if(bulan==1 || bulan == 3 || bulan == 5 || bulan == 7 || bulan == 8 || 
-       bulan == 10 || bulan == 12){
-        while(true){
-            cout << "Masukkan Tanggal : ";
-            cin >> tanggal;
-            if(tanggal > 31 || tanggal == 0){
-                cout << "Masukkan Tanggal dengan benar dan sesuai batas bulan" << endl;
-            } else { break; }
-        }
-    }
+        while (getline(file1, baris)) {
+            int p1 = baris.find(';');
+            int p2 = baris.find(';', p1 + 1);
+            int p3 = baris.find(';', p2 + 1);
+            int p4 = baris.find(';', p3 + 1);
+            int p5 = baris.find(';', p4 + 1);
 
-    else if(bulan==4 || bulan == 6 || bulan==9 || bulan==11 ){
-        while(true){
-            cout << "Masukkan Tanggal : ";
-            cin >> tanggal;
-            if(tanggal > 30 || tanggal == 0){
-                cout << "Masukkan Tanggal dengan benar dan sesuai batas bulan" << endl;
-            } else { break; }
-        }
-    }
+            string idpinjam = baris.substr(0, p1);
+            string idBuku = baris.substr(p1 + 1, p2 - p1 - 1);
+            string idAnggota = baris.substr(p2 + 1, p3 - p2 - 1);
+            string tanggalPinjam = baris.substr(p3 + 1, p4 - p3 - 1);
+            string tanggalKembali = baris.substr(p4 + 1, p5 - p4 - 1);
+            string status = baris.substr(p5 + 1);
 
-    else if(bulan==2){
-        if((tahun%400 == 0) || (tahun%4==0 && tahun%100!=0)){
-            while(true){
-                cout << "Masukkan Tanggal : ";
-                cin >> tanggal;
-                if(tanggal > 29 || tanggal == 0){
-                    cout << "Masukkan Tanggal dengan benar dan sesuai atas bulan" << endl;
-                } else { break; }
+            if (idBuku == idkonfirmasi && status == "1" && idanggota == idAnggota) {
+                ditemukan = true;
+                finalpinjam = idpinjam;
+                kembali = tanggalKembali;
+                pinjamstr = tanggalPinjam;
+
+                int kolom1 = pinjamstr.find('-');
+                int kolom2 = pinjamstr.find('-', kolom1 + 1);
+
+                hariP = stoi(pinjamstr.substr(0, kolom1));
+                bulanP = stoi(pinjamstr.substr(kolom1 + 1, kolom2 - kolom1 - 1));
+                tahunP = stoi(pinjamstr.substr(kolom2 + 1));
+
+                break;
             }
         }
-        else {
-            while(true){
-                cout << "Masukkan Tanggal : ";
-                cin >> tanggal;
-                if(tanggal > 28 || tanggal == 0){
-                    cout << "Masukkan Tanggal dengan benar dan sesuai atas bulan" << endl;
-                } else { break; }
-            }
+
+        file1.close();
+
+        if (!ditemukan) {
+            cout << "ID Buku tidak ditemukan atau tidak sedang dipinjam oleh anggota ini.\n";
+            continue;
         }
-    }
 
+        bool TanggalBenar = false;
 
-    if (tahun < tahunP ||
-   (tahun == tahunP && bulan < bulanP) ||
-   (tahun == tahunP && bulan == bulanP && tanggal < hariP))
-   {
-    cout << endl << "Tanggal pengembalian TIDAK BOLEH sebelum tanggal pinjam ("
-         << hariP << "-" << bulanP << "-" << tahunP << ")!" << endl;
-    cout << "Silakan input ulang." << endl << endl;
-    continue; 
-    }
-    TanggalBenar = true;
-    }
-    int keterlambatan = selisih(kembali,tanggal,bulan,tahun);
-    if (keterlambatan < 0) keterlambatan = 0;
-    int denda = keterlambatan*1000;
+        while (!TanggalBenar) {
 
-    ofstream file2("pengembalian.txt", ios::app);
+            while (true) {
+                cout << "Masukkan Tahun : ";
+                cin >> tahun;
+                if (tahun > 2025 || tahun == 0) cout << "Tolong input Tahun yang benar!\n";
+                else break;
+            }
+
+            while (true) {
+                cout << "Masukkan Bulan : ";
+                cin >> bulan;
+                if (bulan > 12 || bulan == 0) cout << "Tolong masukkan Bulan yang benar!\n";
+                else break;
+            }
+
+            if (bulan == 1 || bulan == 3 || bulan == 5 || bulan == 7 ||
+                bulan == 8 || bulan == 10 || bulan == 12) {
+
+                while (true) {
+                    cout << "Masukkan Tanggal : ";
+                    cin >> tanggal;
+                    if (tanggal > 31 || tanggal == 0) cout << "Tanggal salah!\n";
+                    else break;
+                }
+            }
+            else if (bulan == 4 || bulan == 6 || bulan == 9 || bulan == 11) {
+
+                while (true) {
+                    cout << "Masukkan Tanggal : ";
+                    cin >> tanggal;
+                    if (tanggal > 30 || tanggal == 0) cout << "Tanggal salah!\n";
+                    else break;
+                }
+            }
+            else if (bulan == 2) {
+
+                bool kabisat = (tahun % 400 == 0) || (tahun % 4 == 0 && tahun % 100 != 0);
+
+                while (true) {
+                    cout << "Masukkan Tanggal : ";
+                    cin >> tanggal;
+                    if ((kabisat && tanggal > 29) || (!kabisat && tanggal > 28) || tanggal == 0)
+                        cout << "Tanggal salah!\n";
+                    else break;
+                }
+            }
+
+            if (tahun < tahunP ||
+                (tahun == tahunP && bulan < bulanP) ||
+                (tahun == tahunP && bulan == bulanP && tanggal < hariP)) {
+
+                cout << "\nTanggal pengembalian TIDAK BOLEH sebelum tanggal pinjam!\n";
+                continue;
+            }
+
+            TanggalBenar = true;
+        }
+
+        int keterlambatan = selisih(kembali, tanggal, bulan, tahun);
+        if (keterlambatan < 0) keterlambatan = 0;
+        int denda = keterlambatan * 1000;
+
+        ofstream file2("pengembalian.txt", ios::app);
         file2 << idkonfirmasi << ";"
               << idanggota << ";"
               << kembali << ";"
@@ -1324,47 +1384,45 @@ void pengembalian(){
               << tanggal << "-" << bulan << "-" << tahun << ";"
               << denda << endl;
         file2.close();
-        
-        string Judul = NamaBuku(idkonfirmasi);
-        string Nickname = cariNama(idanggota);
-        
-        cout << endl << "Buku : " << Judul << endl
-             << "ID Buku : " << idkonfirmasi << endl
-             << "Dipinjam oleh : " << Nickname << " ( " << idanggota << " ) " << endl 
-             << "Terlambat : " << keterlambatan << endl
+
+        cout << "\nTerlambat : " << keterlambatan << endl
              << "Denda : " << denda << endl << endl;
-        
+
         UbahStatus(finalpinjam);
         UpdateStokTambah(idkonfirmasi);
 
-        char pilihan;
-    do {
-        cout << "Apakah ada Buku dari " << idanggota
-             << " yang ingin dikembalikan? (1 untuk iya, 0 untuk tidak) : ";
-        cin >> pilihan;
-        
-    } while (pilihan != '0' && pilihan != '1');
+        if (!masihAdaPinjaman(idanggota)) {
+          cout << endl << "Semua buku sudah dikembalikan. Tidak ada pinjaman aktif lagi.\n";
+           break;
+        }
 
-    if (pilihan == '0') {
-        break; 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        string lagi;
+        while (true) {
+        cout << endl << "Apakah ingin mengembalikan buku lagi? (1 = ya, 0 = tidak) : ";
+        getline(cin, lagi);
+
+       if (lagi == "1" || lagi == "0") break;
+         cout << "Input harus 1 atau 0!" << endl;
+       }
+
+       if (lagi == "0") break;
+
     }
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
 
     string nol;
-    while(true){
-       cout << "Menu Kembali (ketik 0) : ";
-       getline(cin,nol);
-       if(nol == "0"){
-        break;
-        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+    while (true) {
+        cout << "Menu Kembali (ketik 0) : ";
+        getline(cin, nol);
+        if (nol == "0") break;
+        else cout << "Anda harus ketik 0 jika ingin kembali\n";
     }
+
     system("cls");
     return;
-
 }
-    
-    
+
 
 void NonaktifAdmin(){
     string menu;
@@ -1792,6 +1850,205 @@ void MenuTampilan(){
 
 }
 
+void GantiPasswordUtama() {
+    string pilihan;
+    while(true){
+        cout << "1. Ganti Password Admin Utama" << endl;
+        cout << "2. Ganti Password Admin Lain" << endl;
+        cout << "Masukkan Menu : ";
+        getline(cin,pilihan);
+
+        if(pilihan=="1" || pilihan=="2"){ break; }
+        else { cout << "Tolong input menu yang benar!" << endl; }
+    }
+
+    if(pilihan=="1"){
+        while(true){
+            string sandi1, sandi2;
+            system("cls");
+            cout << "Masukkan Sandi lama : ";
+            getline(cin,sandi1);
+            cout << "Masukkan Sandi Baru : ";
+            getline(cin,sandi2);
+
+            ifstream file1("petugas.txt");
+            ofstream temp("tempPetugas.txt");
+            string line;
+            bool ketemu = false;
+
+            while(getline(file1,line)){
+                int pos1 = line.find(';');
+                int pos2 = line.find(';',pos1+1);
+                int pos3 = line.find(';',pos2+1);
+                int pos4 = line.find(';',pos3+1);
+                int pos5 = line.find(';',pos4+1);
+
+                string idadmin = line.substr(0,pos1);
+                string nickname = line.substr(pos1+1,pos2-pos1-1);
+                string level = line.substr(pos2+1,pos3-pos2-1);
+                string password = line.substr(pos3+1,pos4-pos3-1);
+                string nama = line.substr(pos4+1,pos5-pos4-1);
+                string status = line.substr(pos5+1);
+
+                if(password==sandi1 && level=="1"){
+                    password = sandi2;
+                    ketemu = true;
+                }
+
+                temp << idadmin << ";" << nickname << ";" << level << ";" << password << ";" << nama << ";" << status << endl;
+            }
+            file1.close();
+            temp.close();
+            remove("petugas.txt");
+            rename("tempPetugas.txt", "petugas.txt");
+
+            if(ketemu){
+                cout << "Password berhasil diganti!" << endl;
+                break;
+            } else {
+                cout << "Password lama salah!" << endl;
+                while(true){
+                    cout << "Apakah ingin mencoba lagi? (1 = ya, 0 = kembali ke menu) : ";
+                    string opsi;
+                    getline(cin, opsi);
+                    if(opsi=="1"){ break; }  
+                    else if(opsi=="0"){ return; } 
+                    else { cout << "Input salah, masukkan 1 atau 0!" << endl; }
+                }
+            }
+        }
+    }
+    else if(pilihan=="2"){
+        while(true){
+            string adminBiasa, sandiBaru;
+            cout << "Masukkan ID Admin Biasa yang akan diganti : ";
+            getline(cin, adminBiasa);
+            cout << "Sandi Baru : ";
+            getline(cin, sandiBaru);
+
+            ifstream file2("petugas.txt");
+            ofstream temp("tempPetugas.txt");
+            string line;
+            bool ditemukan = false;
+
+            while(getline(file2,line)){
+                int pos1 = line.find(';');
+                int pos2 = line.find(';',pos1+1);
+                int pos3 = line.find(';',pos2+1);
+                int pos4 = line.find(';',pos3+1);
+                int pos5 = line.find(';',pos4+1);
+
+                string idadmin = line.substr(0,pos1);
+                string nickname = line.substr(pos1+1,pos2-pos1-1);
+                string level = line.substr(pos2+1,pos3-pos2-1);
+                string password = line.substr(pos3+1,pos4-pos3-1);
+                string nama = line.substr(pos4+1,pos5-pos4-1);
+                string status = line.substr(pos5+1);
+
+                if(idadmin==adminBiasa){
+                    password = sandiBaru;
+                    ditemukan = true;
+                }
+
+                temp << idadmin << ";" << nickname << ";" << level << ";" << password << ";" << nama << ";" << status << endl;
+            }
+            file2.close();
+            temp.close();
+            remove("petugas.txt");
+            rename("tempPetugas.txt", "petugas.txt");
+
+            if(ditemukan){
+                cout << "Password berhasil diganti!" << endl;
+                break;
+            } else {
+                cout << "ID Admin tidak ditemukan!" << endl;
+                while(true){
+                    cout << "Apakah ingin mencoba lagi? (1 = ya, 0 = kembali ke menu) : ";
+                    string opsi;
+                    getline(cin, opsi);
+                    if(opsi=="1"){ break; } 
+                    else if(opsi=="0"){ return; } 
+                    else { cout << "Input salah, masukkan 1 atau 0!" << endl; }
+                }
+            }
+        }
+    }
+
+    string nol;
+    while(true){
+        cout << "Kembali ke menu tampilan (ketik 0) : ";
+        getline(cin,nol);
+        if(nol=="0") break;
+        else cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+    }
+    system("cls");
+}
+
+void GantiPasswordAdminBiasa(string idLogin) { 
+    while (true) {
+        string sandiBaru;
+        cout << "Masukkan Sandi Baru : ";
+        getline(cin, sandiBaru);
+
+        ifstream file("petugas.txt");
+        if (!file.is_open()) {
+            cout << "File petugas.txt tidak bisa dibuka!" << endl;
+            return;
+        }
+
+        ofstream temp("tempPetugas.txt");
+        string line;
+        bool ditemukan = false;
+
+        while (getline(file, line)) {
+            int pos1 = line.find(';');
+            int pos2 = line.find(';', pos1 + 1);
+            int pos3 = line.find(';', pos2 + 1);
+            int pos4 = line.find(';', pos3 + 1);
+            int pos5 = line.find(';', pos4 + 1);
+
+            string idadmin = line.substr(0, pos1);
+            string username = line.substr(pos1 + 1, pos2 - pos1 - 1);
+            string level = line.substr(pos2 + 1, pos3 - pos2 - 1);
+            string password = line.substr(pos3 + 1, pos4 - pos3 - 1);
+            string nama = line.substr(pos4 + 1, pos5 - pos4 - 1);
+            string status = line.substr(pos5 + 1);
+
+            if (username == idLogin) { 
+                password = sandiBaru;
+                ditemukan = true;
+            }
+
+            temp << idadmin << ";" << username << ";" << level << ";" << password << ";" << nama << ";" << status << endl;
+        }
+
+        file.close();
+        temp.close();
+
+        remove("petugas.txt");
+        rename("tempPetugas.txt", "petugas.txt");
+
+        if (ditemukan) {
+            cout << "Password berhasil diganti!" << endl;
+            break;
+        } else {
+            cout << "Terjadi kesalahan, password gagal diganti!" << endl;
+            return;
+        }
+    }
+
+    string nol;
+    while (true) {
+        cout << "Kembali ke menu tampilan (ketik 0) : ";
+        getline(cin, nol);
+        if (nol == "0") break;
+        else cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+    }
+    system("cls");
+}
+
+
+
 void InterfaceAdminUtama(){
     int pilih;
     do{
@@ -1807,7 +2064,8 @@ void InterfaceAdminUtama(){
     cout << "9. Non-Aktif Admin" << endl;
     cout << "10. Non-Aktif Anggota" << endl;
     cout << "11. Hapus Buku" << endl;
-    cout << "12. Tampilkan Buku, Anggota dan Peminjam" << endl;
+    cout << "12. Tampilkan Buku, Anggota dan Peminjam"<<endl;
+    cout << "13. Hapus Password" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Menu : ";
@@ -1867,10 +2125,14 @@ void InterfaceAdminUtama(){
         system("cls");
         MenuTampilan();
     }
+    else if(pilih==13){
+        system("cls");
+        GantiPasswordUtama();
+    }
 } while(true);
 }
 
-void AdminBiasa(){
+void AdminBiasa(string admin){
     int pilih;
     
     do { 
@@ -1885,6 +2147,7 @@ void AdminBiasa(){
     cout << "8. Non-Aktif Anggota" << endl;
     cout << "9. Hapus Buku" << endl;
     cout << "10. Tampilkan Buku, Anggota atau Peminjam" << endl;
+    cout << "11. Hapus Password" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Pilihan : ";
@@ -1935,6 +2198,10 @@ void AdminBiasa(){
         system("cls");
         MenuTampilan();
     }
+    else if(pilih==11){
+        system("cls");
+        GantiPasswordAdminBiasa(admin);
+    }
 } while(true);
 }
 
@@ -1961,150 +2228,147 @@ else if(pilihan==1){
 }
 
 
-void login(){
+void login() {
     int menu;
-    cout << "Menu Perpustakaan Sederhana"<<endl;
-    cout << "==========================="<<endl;
-    cout << "1. Login sebagai Petugas"<<endl;
-    cout << "2. Login sebagai Siswa"<<endl; 
-    
-    while(true) { 
-    cout << "Pilihan Menu : ";
-    cin >> menu;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "Menu Perpustakaan Sederhana" << endl;
+    cout << "===========================" << endl;
+    cout << "1. Login sebagai Petugas" << endl;
+    cout << "2. Login sebagai Siswa" << endl;
 
-    if(menu > 2) {
-        cout << "Tolong pilih sesuai menu!" << endl;
-    }
-    else if(menu == 0){
-        cout << "Tolong pilih sesuai menu!" << endl;
-    }
-    else{
-        break;
-    }
-    }
-    
+    while (true) {
+        cout << "Pilihan Menu : ";
+        cin >> menu;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    if(menu==1){
-        string username;
-        string password;
-        cout << "Masukkan Username : ";
-        getline(cin,username);
-        cout << "Masukkan Password : ";
-        getline(cin,password);
-
-        ifstream file("petugas.txt");
-        if (!file.is_open()) {
-        cout << "File petugas.txt tidak bisa dibuka!" << endl;
-        return;
-        }
-        string line;
-        bool ketemu = false;
-
-        while(getline(file,line)){
-            int posisi1 = line.find(';');
-            int posisi2 = line.find(';',posisi1 + 1);
-            int posisi3 = line.find(';',posisi2 + 1);
-            int posisi4 = line.find(';',posisi3 + 1);
-            int posisi5 = line.find(';',posisi4+1);
-
-            string idAdmin = line.substr(0,posisi1);
-            string usernameAdmin = line.substr(posisi1 + 1, posisi2-posisi1-1);
-            string statusAdmin = line.substr(posisi2 + 1, posisi3-posisi2-1);
-            string passwordAdmin = line.substr(posisi3 + 1,posisi4-posisi3-1);
-            string nama = line.substr(posisi4+1,posisi5-posisi4-1);
-            string status = line.substr(posisi5+1);
-
-            if(username == usernameAdmin){
-                ketemu = true;
-                if(password == passwordAdmin){
-                    file.close();
-                    if(statusAdmin == "1"){
-                        cout << "Login berhasil!" << endl;
-                        system("cls");
-                        InterfaceAdminUtama();
-                    }
-                    else if(statusAdmin == "0" && status == "AKTIF"){
-                        cout << "Login berhasil!" << endl;
-                        system("cls");
-                        AdminBiasa();
-                    } else { cout << "Akun tidak aktif!" << endl; } return;
-                }
-                else{
-                    cout << "Password tidak terdeteksi!";
-                    file.close();
-                    return;
-                }
-            }
-
-        }
-        file.close();
-        cout << "Data tidak ditemukan";
-
-    }
-    
-    else if(menu==2){
-        string nama, kode;
-        string idLoginSiswa = "";
-        cout << "Masukkan Username : ";
-        getline(cin,nama);
-        cout << "Masukkan Kode Anggota : ";
-        getline(cin,kode);
-
-        ifstream file("anggota.txt");
-        if (file.is_open()){
-    }
-    else {
-    }
-        string line;
-        bool ketemu = false;
-
-        while(getline(file,line)){
-            int posisi1 = line.find(';');
-            int posisi2 = line.find(';',posisi1 + 1);
-            int posisi3 = line.find(';',posisi2 + 1);
-            int posisi4 = line.find(';',posisi3 + 1);
-            int posisi5 = line.find(';',posisi4 + 1);
-            int posisi6 = line.find(';',posisi5 + 1);
-
-            string id = line.substr(0,posisi1);
-            string kodeSiswa = line.substr(posisi1 + 1, posisi2-posisi1-1);
-            string namaSiswa = line.substr(posisi2 + 1, posisi3-posisi2-1);
-            string tanggal = line.substr(posisi3 + 1, posisi4-posisi3-1);
-            string alamat = line.substr(posisi4 + 1, posisi5-posisi4-1);
-            string email = line.substr(posisi5 + 1, posisi6-posisi5-1);
-            string statusSiswa = line.substr(posisi6 + 1);
-
-        if(nama == namaSiswa) {
-            ketemu = true;
-            if(kode == kodeSiswa){
-                if(statusSiswa == "0"){
-                    cout << "Akun Tidak Aktif";
-                }
-                else{
-                    cout << "Login berhasil!" << endl;
-                    system("cls");
-                    InterfaceAnggota();
-                }
-            }
-            else{
-                cout << "Kode Berbeda";
-            }
+        if (menu > 2 || menu == 0)
+            cout << "Tolong pilih sesuai menu!" << endl;
+        else
             break;
+    }
+
+    if (menu == 1) { 
+        while (true) {
+            string username, password;
+            cout << "Masukkan Username (atau ketik 0 untuk kembali) : ";
+            getline(cin, username);
+            if (username == "0") return;
+
+            cout << "Masukkan Password : ";
+            getline(cin, password);
+
+            ifstream file("petugas.txt");
+            if (!file.is_open()) {
+            }
+
+            string line;
+            bool ketemu = false;
+            while (getline(file, line)) {
+                int pos1 = line.find(';');
+                int pos2 = line.find(';', pos1 + 1);
+                int pos3 = line.find(';', pos2 + 1);
+                int pos4 = line.find(';', pos3 + 1);
+                int pos5 = line.find(';', pos4 + 1);
+
+                string idAdmin = line.substr(0, pos1);
+                string usernameAdmin = line.substr(pos1 + 1, pos2 - pos1 - 1);
+                string level = line.substr(pos2 + 1, pos3 - pos2 - 1);
+                string passwordAdmin = line.substr(pos3 + 1, pos4 - pos3 - 1);
+                string nama = line.substr(pos4 + 1, pos5 - pos4 - 1);
+                string status = line.substr(pos5 + 1);
+
+                if (username == usernameAdmin) {
+                    ketemu = true;
+                    if (password == passwordAdmin) {
+                        file.close();
+                        if (level == "1") {
+                            cout << "Login berhasil!" << endl;
+                            system("cls");
+                            InterfaceAdminUtama();
+                            return;
+                        } else if (level == "0" && status == "AKTIF") {
+                            cout << "Login berhasil!" << endl;
+                            system("cls");
+                            AdminBiasa(idAdmin);
+                            return;
+                        } else {
+                            cout << "Akun tidak aktif!" << endl;
+                            return;
+                        }
+                    } else {
+                        cout << "Password salah! Coba lagi." << endl;
+                        ketemu = true;
+                        break; 
+                    }
+                }
+            }
+
+            file.close();
+            if (!ketemu) {
+                cout << "Username tidak ditemukan! Coba lagi." << endl;
+            }
+        }
+    } 
+    else if (menu == 2) {
+        while (true) {
+            string nama, kode;
+            cout << "Masukkan Username (atau ketik 0 untuk kembali) : ";
+            getline(cin, nama);
+            if (nama == "0") return;
+
+            cout << "Masukkan Kode Anggota : ";
+            getline(cin, kode);
+
+            ifstream file("anggota.txt");
+            if (!file.is_open()) {
+                return;
+            }
+
+            string line;
+            bool ketemu = false;
+
+            while (getline(file, line)) {
+                int pos1 = line.find(';');
+                int pos2 = line.find(';', pos1 + 1);
+                int pos3 = line.find(';', pos2 + 1);
+                int pos4 = line.find(';', pos3 + 1);
+                int pos5 = line.find(';', pos4 + 1);
+                int pos6 = line.find(';', pos5 + 1);
+
+                string id = line.substr(0, pos1);
+                string kodeSiswa = line.substr(pos1 + 1, pos2 - pos1 - 1);
+                string namaSiswa = line.substr(pos2 + 1, pos3 - pos2 - 1);
+                string tanggal = line.substr(pos3 + 1, pos4 - pos3 - 1);
+                string alamat = line.substr(pos4 + 1, pos5 - pos4 - 1);
+                string email = line.substr(pos5 + 1, pos6 - pos5 - 1);
+                string statusSiswa = line.substr(pos6 + 1);
+
+                if (nama == namaSiswa) {
+                    ketemu = true;
+                    if (kode == kodeSiswa) {
+                        if (statusSiswa == "0") {
+                            cout << "Akun Tidak Aktif" << endl;
+                            break;
+                        } else {
+                            cout << "Login berhasil!" << endl;
+                            system("cls");
+                            InterfaceAnggota();
+                            return;
+                        }
+                    } else {
+                        cout << "Kode berbeda! Coba lagi." << endl;
+                        break;
+                    }
+                }
+            }
+
+            file.close();
+            if (!ketemu) {
+                cout << "Data tidak ketemu! Coba lagi." << endl;
+            }
         }
     }
-    file.close();
-
-    if(!ketemu){
-        cout << "Data tidak ketemu" << endl;
-    }
-         
-    }
-    else{
-    cout << "Tolong pilih sesuai inputan";
-    }
-
 }
+
 
 int main(){
     login();
