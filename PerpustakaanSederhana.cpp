@@ -1171,6 +1171,7 @@ bool masihAdaPinjaman(string idanggota) {
 
 
 void pengembalian() {
+    cout << "MENU PENGEMBALIAN" << endl << endl;
     string idanggota, idkonfirmasi;
     int tahun, bulan, tanggal;
     int hariP = 0, bulanP = 0, tahunP = 0;
@@ -2065,7 +2066,7 @@ void InterfaceAdminUtama(){
     cout << "10. Non-Aktif Anggota" << endl;
     cout << "11. Hapus Buku" << endl;
     cout << "12. Tampilkan Buku, Anggota dan Peminjam"<<endl;
-    cout << "13. Hapus Password" << endl;
+    cout << "13. Ganti Password" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Menu : ";
@@ -2107,6 +2108,8 @@ void InterfaceAdminUtama(){
     }
     else if(pilih==8){
         system("cls");
+
+
         pengembalian();
     }
     else if(pilih==9){
@@ -2147,7 +2150,7 @@ void AdminBiasa(string admin){
     cout << "8. Non-Aktif Anggota" << endl;
     cout << "9. Hapus Buku" << endl;
     cout << "10. Tampilkan Buku, Anggota atau Peminjam" << endl;
-    cout << "11. Hapus Password" << endl;
+    cout << "11. Ganti Password" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Pilihan : ";
