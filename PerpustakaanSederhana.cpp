@@ -638,6 +638,7 @@ void UpdateStok(string idbuku){
 }
 
 void Peminjaman(){
+    while(true){
     peminjaman m;
     string idanggota,idbuku;
     while(true){ 
@@ -896,17 +897,39 @@ fileOutput.close();
 
 UpdateStok(idbuku);
 
-string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    while(true){
-       cout << "Kembali ke menu tampilan (ketik 0) : ";
-       getline(cin,nol);
-       if(nol == "0"){
-        break;
-        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+string pilih;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        while (true) {
+            cout << "Pinjam lagi? (1 = Ya, 0 = Kembali ke menu): ";
+            getline(cin, pilih);
+
+            if (pilih == "1") {
+                system("cls");
+                break; 
+            }
+            else if (pilih == "0") {
+                string nol;
+                while (true) {
+                    cout << "Kembali ke menu tampilan (ketik 0) : ";
+                    getline(cin, nol);
+
+                    if (nol == "0") {
+                        system("cls");
+                        return;   
+                    }
+                    else {
+                        cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+                    }
+                }
+
+            }
+            else {
+                cout << "Input tidak valid! Pilih 1 atau 0." << endl;
+            }
+        }
+
     }
-    system("cls");
-    return;
     }
 
 void UpdateStokTambah(string idBuku){
@@ -1001,12 +1024,8 @@ void cariPeminjaman(){
     string menu;
     while(true){
     cout << "Masukkan ID Peminjaman yang ingin di cari : ";
-    getline(cin,menu);
-
-    if(menu.length() > 6 && menu.length() == 0){
-        cout << "Masukkan ID yang benar!" << endl;
-    } else { break; }   
-    }
+    getline(cin,menu);  
+    
 
     ifstream file("Peminjaman.txt");
     string line, baris, baris2;
@@ -1054,6 +1073,32 @@ void cariPeminjaman(){
     
     }
     file.close();
+   if(!ketemu){
+    cout << "Data tidak ditemukan!" << endl;
+    cout << "Apakah anda ingin mencari peminjaman yang lain? (1 = ya, 0=tidak) : ";
+    string opsi;
+    getline(cin,opsi);
+    if(opsi=="1"){
+        system("cls");
+        continue;
+    } else if(opsi=="0"){
+        break;
+    } else { 
+        cout << "Anda harus ketik 0 jika ingin kembali" << endl;
+    }
+    }
+    
+    cout << endl << "Cari id lain? (1 = ya, 0 = tidak): ";
+        string pilihan;
+        getline(cin, pilihan);
+
+        if(pilihan == "1"){
+            system("cls");
+            continue;
+        } else if(pilihan=="0"){
+            break;
+        } 
+}
 
     string nol;
     while(true){
@@ -1495,6 +1540,76 @@ void NonaktifAdmin(){
     return;
 }
 
+void AktifAdmin(){
+    string menu;
+    cout << "Masukkan ID Admin yang ingin di input : ";
+    getline(cin,menu);
+
+    ifstream adminFile("petugas.txt");
+    ofstream tempoFile("temporaryAdmin.txt");
+
+        string baris;
+        bool ketemu = false;
+        string UpdateStatus = "AKTIF";
+
+        while(getline(adminFile,baris)){
+            int pos1 = baris.find(';');
+            int pos2 = baris.find(';',pos1+1);
+            int pos3 = baris.find(';',pos2+1);
+            int pos4 = baris.find(';',pos3+1);
+            int pos5 = baris.find(';',pos4+1);
+
+            string id = baris.substr(0,pos1);
+            string username = baris.substr(pos1+1,pos2-pos1-1);
+            string ADMIN = baris.substr(pos2+1,pos3-pos2-1);
+            string password = baris.substr(pos3+1,pos4-pos3-1);
+            string nama = baris.substr(pos4+1,pos5-pos4-1);
+            string status = baris.substr(pos5+1);
+
+
+            if(id == menu){
+               ketemu = true;
+
+               if(ADMIN == "1"){
+                cout << "ID adalah milik Admin Utama, Tolong input ID yang benar!" << endl;
+                tempoFile << baris << endl; 
+               } 
+                else if (status == "AKTIF") {
+                cout << "Admin ini sudah nonaktif sebelumnya." << endl;
+                tempoFile << baris << endl;
+                }
+               else {
+                tempoFile << id << ";" << username << ";" << ADMIN << ";" << password << ";" << nama << ";" << UpdateStatus << endl;
+                cout << "Admin berhasil diaktifkan!" << endl;
+               }
+            }
+            else{
+            tempoFile << baris << endl;
+            }
+    }
+    adminFile.close();
+    tempoFile.close();
+
+    remove("petugas.txt");
+    rename("temporaryAdmin.txt", "petugas.txt");
+
+    if (!ketemu) {
+        cout << "ID Admin tidak ditemukan!" << endl;
+    }
+
+    string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while(true){
+       cout << "Menu Kembali (ketik 0) : ";
+       getline(cin,nol);
+       if(nol == "0"){
+        break;
+        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+    }
+    system("cls");
+    return;
+}
+
 void NonaktifAnggota(){
     string in;
     cout << "Masukkan ID Anggota yang ingin di input : ";
@@ -1560,6 +1675,105 @@ void NonaktifAnggota(){
     }
     system("cls");
     return;
+}
+
+void AktifAnggota(){
+    string in;
+    cout << "Masukkan ID Anggota yang ingin di input : ";
+    getline(cin,in);
+
+    ifstream file("anggota.txt");
+    ofstream tempo("temporaryAnggota.txt");
+
+        string baris;
+        bool ketemu = false;
+        string UpdateStatus = "1";
+
+        while(getline(file,baris)){
+            int pos1 = baris.find(';');
+            int pos2 = baris.find(';',pos1+1);
+            int pos3 = baris.find(';',pos2+1);
+            int pos4 = baris.find(';',pos3+1);
+            int pos5 = baris.find(';',pos4+1);
+            int pos6 = baris.find(';',pos5+1);
+
+            string id = baris.substr(0,pos1);
+            string kode = baris.substr(pos1+1,pos2-pos1-1);
+            string nama = baris.substr(pos2+1,pos3-pos2-1);
+            string tanggal = baris.substr(pos3+1,pos4-pos3-1);
+            string alamat = baris.substr(pos4+1,pos5-pos4-1);
+            string gmail = baris.substr(pos5+1,pos6-pos5-1);
+            string status = baris.substr(pos6+1);
+
+
+            if(id == in){
+               ketemu = true;
+
+                if (status == "0") {
+                tempo << id << ";" << kode << ";" << nama << ";" << tanggal << ";" << alamat << ";" << gmail << ";" << UpdateStatus << endl;
+                cout << "Anggota berhasil di non-aktifkan" << endl;
+                }
+               else {
+                cout << "Anggota sudah dinon-aktifkan" << endl;
+               }
+            }
+            else{
+            tempo << baris << endl;
+            }
+    }
+    file.close();
+    tempo.close();
+
+    remove("anggota.txt");
+    rename("temporaryAnggota.txt", "anggota.txt");
+
+    if (!ketemu) {
+        cout << "ID Anggota tidak ditemukan!" << endl;
+    }
+
+    string nol;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while(true){
+       cout << "Menu Kembali (ketik 0) : ";
+       getline(cin,nol);
+       if(nol == "0"){
+        break;
+        } else { cout << "Anda harus ketik 0 jika ingin kembali" << endl; }
+    }
+    system("cls");
+    return;
+}
+
+void tampilanAktif(){
+    int pilihan;
+    do{
+    cout << "1. Non-Aktifkan Admin" << endl;
+    cout << "2. Aktifkan Admin" << endl;
+    cout << "3. Non-Aktifkan Anggota" << endl;
+    cout << "4. Aktifkan Anggota" << endl;
+    cout << "0. Kembali ke menu utama" << endl;
+    cout << "Masukkan Menu : ";
+    cin >> pilihan;
+    if(pilihan==0) {system("cls"); return; }
+    else if(pilihan==1){ system("cls"); NonaktifAdmin(); }
+    else if(pilihan==2) { system("cls"); AktifAdmin(); }
+    else if(pilihan==3) { system("cls"); NonaktifAnggota(); }
+    else if(pilihan==4) { system("cls"); AktifAnggota(); }
+    } while(true);
+}
+
+void biasatampilanAktif(){
+    int pilihan;
+    do{
+    cout << "1. Non-Aktifkan Anggota" << endl;
+    cout << "2. Aktifkan Anggota" << endl;
+    cout << "0. Kembali ke menu utama" << endl;
+    cout << "Masukkan Menu : ";
+    cin >> pilihan;
+    if(pilihan==0) {system("cls"); return; }
+    else if(pilihan==1) { system("cls"); NonaktifAnggota(); }
+    else if(pilihan==2) { system("cls"); AktifAnggota(); }
+    } while(true);
 }
 
 void HapusBuku(){
@@ -2062,11 +2276,10 @@ void InterfaceAdminUtama(){
     cout << "6. Peminjaman" << endl;
     cout << "7. Cari Peminjaman" << endl;
     cout << "8. Pengembalian" << endl;
-    cout << "9. Non-Aktif Admin" << endl;
-    cout << "10. Non-Aktif Anggota" << endl;
-    cout << "11. Hapus Buku" << endl;
-    cout << "12. Tampilkan Buku, Anggota dan Peminjam"<<endl;
-    cout << "13. Ganti Password" << endl;
+    cout << "9. Aktif & Non-aktifkan (Admin & Anggota)" << endl;
+    cout << "10. Hapus Buku" << endl;
+    cout << "11. Tampilkan Buku, Anggota dan Peminjam"<<endl;
+    cout << "12. Ganti Password" << endl;
     cout << "0. Berhenti" << endl;
     
     cout << "Masukkan Menu : ";
@@ -2114,21 +2327,17 @@ void InterfaceAdminUtama(){
     }
     else if(pilih==9){
         system("cls");
-        NonaktifAdmin();
+        tampilanAktif();
     }
     else if(pilih==10){
         system("cls");
-        NonaktifAnggota();
+        HapusBuku();
     }
     else if(pilih==11){
         system("cls");
-        HapusBuku();
-    }
-    else if(pilih==12){
-        system("cls");
         MenuTampilan();
     }
-    else if(pilih==13){
+    else if(pilih==12){
         system("cls");
         GantiPasswordUtama();
     }
@@ -2147,7 +2356,7 @@ void AdminBiasa(string admin){
     cout << "5. Peminjaman" << endl;
     cout << "6. Cari Peminjaman" << endl;
     cout << "7. Pengembalian" << endl;
-    cout << "8. Non-Aktif Anggota" << endl;
+    cout << "8. Non-Aktif & Aktifkan Anggota" << endl;
     cout << "9. Hapus Buku" << endl;
     cout << "10. Tampilkan Buku, Anggota atau Peminjam" << endl;
     cout << "11. Ganti Password" << endl;
@@ -2191,7 +2400,7 @@ void AdminBiasa(string admin){
     }
     else if(pilih==8){
         system("cls");
-        NonaktifAnggota();
+        biasatampilanAktif();
     }
     else if(pilih==9){
         system("cls");
