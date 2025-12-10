@@ -3,7 +3,6 @@
 000003;20230314001;;14-3-2023;Desa Jabon;yanz@gmil.com;1
 000004;20090802001;Jobod;2-8-2009;Ngantru;jobod@gmail.com;1
 000005;20030404001;Muhammad Rezki;4-4-2003;Desa Tanjung;rezki@gmail.com;0
-000006;20090530001;Muhammad Rafi Nur Alfan;30-5-2009;WATES;RAFI@GMAIL.COM;0
 000007;20100116001;Rayqal Shaka;16-1-2010;Desa Jabon;shaka@gmail.com;1
 000008;20070301001;Reyhan;1-3-2007;Desa Wates;rehan@gmail.com;1
 000009;20100116002;Joji;16-1-2010;Desa Jabon;joji@gmail.com;1

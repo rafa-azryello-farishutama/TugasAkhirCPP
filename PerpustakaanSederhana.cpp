@@ -1528,7 +1528,6 @@ void NonaktifAdmin(){
     }
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -1598,7 +1597,6 @@ void AktifAdmin(){
     }
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -1665,7 +1663,6 @@ void NonaktifAnggota(){
     }
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -1732,7 +1729,6 @@ void AktifAnggota(){
     }
 
     string nol;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     while(true){
        cout << "Menu Kembali (ketik 0) : ";
        getline(cin,nol);
@@ -1745,7 +1741,7 @@ void AktifAnggota(){
 }
 
 void tampilanAktif(){
-    int pilihan;
+    string pilihan;
     do{
     cout << "1. Non-Aktifkan Admin" << endl;
     cout << "2. Aktifkan Admin" << endl;
@@ -1753,26 +1749,27 @@ void tampilanAktif(){
     cout << "4. Aktifkan Anggota" << endl;
     cout << "0. Kembali ke menu utama" << endl;
     cout << "Masukkan Menu : ";
-    cin >> pilihan;
-    if(pilihan==0) {system("cls"); return; }
-    else if(pilihan==1){ system("cls"); NonaktifAdmin(); }
-    else if(pilihan==2) { system("cls"); AktifAdmin(); }
-    else if(pilihan==3) { system("cls"); NonaktifAnggota(); }
-    else if(pilihan==4) { system("cls"); AktifAnggota(); }
+    getline(cin,pilihan);
+    if(pilihan=="0") {system("cls"); return; }
+    else if(pilihan=="1"){ system("cls"); NonaktifAdmin(); }
+    else if(pilihan=="2") { system("cls"); AktifAdmin(); }
+    else if(pilihan=="3") { system("cls"); NonaktifAnggota(); }
+    else if(pilihan=="4") { system("cls"); AktifAnggota(); }
     } while(true);
 }
 
 void biasatampilanAktif(){
-    int pilihan;
+    string pilihan;
     do{
     cout << "1. Non-Aktifkan Anggota" << endl;
     cout << "2. Aktifkan Anggota" << endl;
     cout << "0. Kembali ke menu utama" << endl;
     cout << "Masukkan Menu : ";
-    cin >> pilihan;
-    if(pilihan==0) {system("cls"); return; }
-    else if(pilihan==1) { system("cls"); NonaktifAnggota(); }
-    else if(pilihan==2) { system("cls"); AktifAnggota(); }
+    getline(cin,pilihan);
+    
+    if(pilihan=="0") {system("cls"); return; }
+    else if(pilihan=="1") { system("cls"); NonaktifAnggota(); }
+    else if(pilihan=="2") { system("cls"); AktifAnggota(); }
     } while(true);
 }
 
@@ -2070,10 +2067,12 @@ void GantiPasswordUtama() {
     while(true){
         cout << "1. Ganti Password Admin Utama" << endl;
         cout << "2. Ganti Password Admin Lain" << endl;
+        cout << "0. Kembali" << endl;
         cout << "Masukkan Menu : ";
         getline(cin,pilihan);
 
-        if(pilihan=="1" || pilihan=="2"){ break; }
+        if(pilihan=="0") { system("cls"); return; }
+        else if(pilihan=="1" || pilihan=="2"){ break; }
         else { cout << "Tolong input menu yang benar!" << endl; }
     }
 

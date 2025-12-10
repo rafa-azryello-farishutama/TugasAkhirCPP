@@ -1,5 +1,5 @@
 BK0001;9789792281415;Gadis Kretek;Ratih Kumala;Gramedia Pustaka Utama;2015;5
-BK0002;9786020421773;One Punch Man;One;PR Elexmedia Komputindo;2013;62
+BK0002;9786020421773;One Punch Man;One;PR Elexmedia Komputindo;2013;61
 BK0003;9786020434032;One Piece;Oda;PT Elexmedia Komputindo;2010;310
 BK0004;9786238882205;Teruslah Bodoh Jangan Pintar;Tere Liye;Sabakgrip;2014;23
 BK0005;9786020401270;Detektif Conan;Aoyama Gosho;PT Elexmedia Komputindo;1995;32
