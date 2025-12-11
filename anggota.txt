@@ -7,3 +7,5 @@
 000008;20070301001;Reyhan;1-3-2007;Desa Wates;rehan@gmail.com;1
 000009;20100116002;Joji;16-1-2010;Desa Jabon;joji@gmail.com;1
 000010;20100301001;Ilham ;1-3-2010;Desa Gondang;ilham@gmail.com;1
+000011;20030305001;Yazril Ridho Fajriya;5-3-2003;Desa Jabon;yazril@gmail.com;1
+000012;20050228001;sabila;28-2-2005;Desa Tanjung;sabila@gmail.com;1

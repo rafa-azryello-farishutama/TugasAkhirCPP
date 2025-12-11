@@ -742,12 +742,12 @@ void Peminjaman(){
     while(true){
     cout << "Masukkan Tahun : ";
     cin >> m.tahunPinjam;
-    if(m.tahunPinjam>2025) {
+    if(m.tahunPinjam>2025 || m.tahunPinjam < 2025) {
         cout << "Tolong jangan melebihi batas Tahun"<<endl;
        }
     else if(m.tahunPinjam==0){
         cout << "Tolong jangan mengkosongi tahun"<<endl;
-       }   
+       }
     else{
         break;
     }
@@ -1364,7 +1364,7 @@ void pengembalian() {
             while (true) {
                 cout << "Masukkan Tahun : ";
                 cin >> tahun;
-                if (tahun > 2025 || tahun == 0) cout << "Tolong input Tahun yang benar!\n";
+                if (tahun < 2025 || tahun == 0) cout << "Tolong input Tahun yang benar!\n";
                 else break;
             }
 
